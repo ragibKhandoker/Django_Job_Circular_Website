@@ -78,38 +78,15 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    #     'OPTIONS':{
-    #         'timeout':20,
-    #     }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'job_database',
-        'USER': 'postgres',
-        'PASSWORD': '999-post@gresql',
-        'HOST': 'localhost',
-        'PORT': '5432',
-
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_POST'),
     }
-    # 'default': {
 
-    #     # 'ENGINE': 'django.db.backends.mysql',
-    #     # 'NAME': 'job_website',
-    #     # # 'USER': 'myuser',
-    #     # 'USER': 'root',
-    #     # 'PASSWORD': '888-@rafimySql',
-    #     # # 'PASSWORD': 'mypassword',
-    #     # 'HOST': 'localhost',
-    #     # 'PORT': '3306',
-    #     # 'ENGINE': 'django.db.backends.mysql',
-    #     # 'NAME': 'job_database',
-    #     # 'USER': 'root',
-    #     # 'PASSWORD': '888-@rafimySql',
-    #     # 'HOST': 'localhost',
-    #     # 'PORT': '3306',
-    # }
 }
 
 
