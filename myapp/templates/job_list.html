@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -109,6 +109,8 @@
         {% if jobs %}
             {% for job in jobs %}
                 <div class="job-card">
+                    <h1>{{ job.title }}</h1>
+                    <p><strong>Job ID:</strong>{{ job.id }}</p>
                     <p><strong>Location:</strong> {{ job.location }}</p>
                     <p><strong>Salary:</strong> {{ job.salary }}</p>
                     <p><strong>Description:</strong> {{ job.requirements }}</p>
@@ -117,20 +119,55 @@
                     <p><strong>Educational Level:</strong> {{ job.educational_level }}</p>
                     <p><strong>Work Hours:</strong> {{ job.work_hours }}</p>
                     <p><strong>Deadline:</strong> {{ job.deadline }}</p>
+                    {% comment %} <h3>{{ job.title }}</h3>
+                    <p>Job ID: {{ job.id }}</p> {% endcomment %}
+                    {% comment %} <a href="{% url 'apply_form' job.id %}">
+                        <button>Apply</button>
+                    </a> {% endcomment %}
+                    {% comment %} <a href="{% url 'apply_form' job.id %}" class="apply-btn">
+                        Apply Now
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <style>
+                        .apply-btn {
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                            padding: 12px 24px;
+                            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            font-size: 1rem;
+                            text-decoration: none;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+                        }
 
-                    {% comment %} <div class="job-title">{{ job.title }}</div>
-                    <div class="job-detail"><strong>Location:</strong> {{ job.location }}</div>
-                    <div class="job-detail"><strong>Salary:</strong> {{ job.salary }}</div>
-                    <div class="job-detail"><strong>Description:</strong> {{ job.requirements }}</div>
-                    <div class="job-detail"><strong>Job Type:</strong>
-                    </div> {% endcomment %}
-                    <a href="{% url 'apply' job.id %}" class="apply-link">Apply Now</a>
+                        .apply-btn:hover {
+                            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+                            transform: translateY(-2px);
+                            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3);
+                        }
 
-                    {% comment %} <form action="{% url 'delete_job' job.id %}" method="post" style="display: inline;" onsubmit = "return confirmDelete()">
-                        {% csrf_token %}
-                        <button type="submit" class="delete-button">Delete</button>
-                    </form>
-                    <a href="{% url 'apply' job.id %}" class="apply-link">Apply Now</a> {% endcomment %}
+                        .apply-btn:active {
+                            transform: translateY(0);
+                        }
+
+                        .apply-btn svg {
+                            transition: transform 0.3s ease;
+                        }
+
+                        .apply-btn:hover svg {
+                            transform: translateX(3px);
+                        }
+                    </style>
+
                 </div>
 
                     {% if not is_category_page %}
@@ -145,11 +182,223 @@
         {% else %}
             <p class="no-jobs">No jobs available at the moment. Please check back later.</p>
         {% endif %}
+
         <script>
             function confirmDelete(){
                 return confirm("Are you sure you want to delete this job???");
             }
         </script>
     </div>
+</body>
+</html> {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Listings</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+        }
+
+        header {
+            background-color: #34495e;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .job-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+            position: relative;
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .job-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .job-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .job-detail {
+            font-size: 1rem;
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .job-detail strong {
+            color: #34495e;
+            min-width: 150px;
+            display: inline-block;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .apply-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+        }
+
+        .apply-btn:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .apply-btn svg {
+            transition: transform 0.3s ease;
+        }
+
+        .apply-btn:hover svg {
+            transform: translateX(3px);
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .no-jobs {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #888;
+            padding: 40px 0;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+        }
+
+        .job-id {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Available Job Listings</h1>
+    </header>
+
+    {% if request.GET.posted == 'true' %}
+    <div class="success-message">
+        ✅ Job has been posted successfully! Please find it at the bottom.
+    </div>
+    {% endif %}
+
+    <div class="container">
+        {% if jobs %}
+            {% for job in jobs %}
+                <div class="job-card">
+                    <span class="job-id">Job ID: {{ job.id }}</span>
+                    <h1 class="job-title">{{ job.title }}</h1>
+
+                    <div class="job-details">
+                        <p class="job-detail"><strong>Location:</strong> {{ job.location }}</p>
+                        <p class="job-detail"><strong>Salary:</strong> {{ job.salary }}</p>
+                        <p class="job-detail"><strong>Description:</strong> {{ job.requirements }}</p>
+                        <p class="job-detail"><strong>Job Type:</strong> {{ job.status }}</p>
+                        <p class="job-detail"><strong>Experience Level:</strong> {{ job.experience_level }}</p>
+                        <p class="job-detail"><strong>Educational Level:</strong> {{ job.educational_level }}</p>
+                        <p class="job-detail"><strong>Work Hours:</strong> {{ job.work_hours }}</p>
+                        <p class="job-detail"><strong>Deadline:</strong> {{ job.deadline }}</p>
+                    </div>
+
+                    <div class="action-buttons">
+                        <a href="{% url 'apply_form' job.id %}" class="apply-btn">
+                            Apply Now
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+
+                        {% if not is_category_page %}
+                        <form action="{% url 'delete_job' job.id %}" method="post" onsubmit="return confirmDelete()">
+                            {% csrf_token %}
+                            <button type="submit" class="delete-button">Delete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-jobs">No jobs available at the moment. Please check back later.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function confirmDelete(){
+            return confirm("Are you sure you want to delete this job???");
+        }
+    </script>
 </body>
 </html>

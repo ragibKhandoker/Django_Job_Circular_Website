@@ -566,7 +566,7 @@
                         <p>{{ job.requirements|truncatewords:20 }}</p>
                         <div class="job-card-footer">
                             <span class="job-date">Posted {{ job.created_at|timesince }} ago</span>
-                            <a href="{% url 'apply' job.id %}" class="btn btn-primary">Apply Now</a>
+                            <a href="{% url 'apply_form' job.id %}" class="btn btn-primary">Apply Now</a>
                         </div>
                     </div>
                 {% endfor %}

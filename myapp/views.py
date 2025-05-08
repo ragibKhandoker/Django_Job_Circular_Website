@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
-from .forms import (EmployerRegistrationForm, JobApplicationForm, JobPostForm,
-                    SignupForm)
+from .forms import (ApplicationForm, EmployerRegistrationForm,
+                    JobApplicationForm, JobPostForm, SignupForm)
 from .models import JobPost, NetworkingJob, Techjob, UserSignup
 
 email_address=''
@@ -163,3 +163,19 @@ def apply_view(request,job_id):
 def apply_job_view(request,job_id):
     job = get_object_or_404(JobPost,id = job_id)
     return render(request,'apply_success.html',{'job':job})
+
+def apply_form(request,job_id):
+    job = get_object_or_404(JobPost, id=job_id)
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST,request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.job = job
+            application.save()
+            return redirect('application_success')
+    else:
+        form = ApplicationForm()
+    return render(request,'apply_form.html',{'form':form,'job':job})
+
+def application_success(request):
+    return render(request,'application_success.html')

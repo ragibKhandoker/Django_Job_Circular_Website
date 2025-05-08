@@ -47,7 +47,7 @@ class EmployerRegistrationModelForm(forms.ModelForm):
         if employer_id is not None and employer_id < 0:
             raise forms.ValidationError("Id must be positive")
         return employer_id
-class JobApplicationForm(forms.ModelForm):
+class ApplicationForm(forms.ModelForm):
     class Meta:
         model = JobApplicationForm
         fields = ['name','email','resume']
