@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import modelformset_factory
 
-from .models import (Applicant, EduationalBackground, EducationalBackground,
+from .models import (Applicant, EducationalBackground,
                      EmployerRegistrationForm, JobApplicationForm, JobPost,
                      UserSignup, WorkExperience)
 
@@ -54,7 +54,7 @@ class ApplicationForm(forms.ModelForm):
     class Meta:
         model = JobApplicationForm
         fields = ['full_name','email','phone','cover_letter','resume']
-class WorkExperinceForm(forms.ModelForm):
+class WorkExperienceForm(forms.ModelForm):
     class Meta:
         model = WorkExperience
         fields = ['company_name','position','start_date','end_date','description']
@@ -63,4 +63,5 @@ class EducationalBackgroundForm(forms.ModelForm):
     class Meta:
         model = EducationalBackground
         fields = ['institution_name','degree','start_year','end_year']
-WorkExperinceFormSet = modelformset_factory(WorkExperience,form=WorkExperinceForm,extra=1, can_delete = True)
+WorkExperienceFormSet = modelformset_factory(WorkExperience,form=WorkExperienceForm,extra=1, can_delete = True)
+EducationalBackgroundFormSet = modelformset_factory(EducationalBackground,form=EducationalBackgroundForm,extra=1,can_delete= True)

@@ -6,8 +6,9 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
-from .forms import (ApplicationForm, EmployerRegistrationForm,
-                    JobApplicationForm, JobPostForm, SignupForm)
+from .forms import (ApplicationForm, EducationalBackgroundFormSet,
+                    EmployerRegistrationForm, JobApplicationForm, JobPostForm,
+                    SignupForm, WorkExperienceFormSet, WorkExperinceFormset)
 from .models import (JobApplicationForm, JobPost, NetworkingJob, Techjob,
                      UserSignup)
 
@@ -188,3 +189,16 @@ def apply_form(request,job_id):
 
 def application_success(request):
     return render(request,'application_success.html')
+
+def apply_job(request):
+    if request.method == 'POST':
+        application_form = ApplicationForm(request.POST,request.FILES)
+        work_experience_formset = WorkExperienceFormSet(request.POST,prefix='work')
+        education_formset = EducationalBackgroundFormSet(request.POST,prefix='edu')
+        if application_form.is_valid() and work_experience_formset.is_valid() and education_formset.is_valid():
+            applicant = application_form.save()
+            for form in work_experience_formset:
+                instance = form.save(commit=False)
+                if form.cleaned_data and not form.cleaned_data.get('DELETE',False):
+                    instance.applicant = applicant
+                    instance.save()
