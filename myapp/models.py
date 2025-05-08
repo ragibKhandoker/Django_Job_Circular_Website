@@ -112,7 +112,7 @@ class JobPost(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, max_length=100)
     work_hours = models.IntegerField(choices=HOURS_CHOICES)
     requirements = models.TextField(max_length=400)
-    educational_level = models.CharField(max_length=20, choices=EDUCATION_CHOICES)
+    educational_level = models.CharField(max_length=50, choices=EDUCATION_CHOICES)
     experience_level = models.CharField(max_length=20, choices=EXPERIENCE_CHOICES)
     deadline = models.DateField(null=True, blank=True)
 
@@ -121,10 +121,34 @@ class JobPost(models.Model):
 
 class JobApplicationForm(models.Model):
     job = models.ForeignKey(JobPost,on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100)
     email = models.EmailField()
+    phone = models.CharField(max_length=20,blank=True)
     resume = models.FileField(upload_to='resume/')
+    cover_letter = models.TextField()
     applied_on = models.DateTimeField(auto_now_add = True)
 
     def __str__(self):
-        return f"Application by {self.name} for {self.job.title}"
+        return f"Application by {self.full_name} for {self.job.title}"
+
+class Applicant(models.Model):
+    full_name = models.CharField(max_length=100)
+    email = models.CharField()
+    phone = models.CharField(max_length=20,blank=True)
+    cover_letter = models.TextField(blank=True)
+    resume = models.FileField(upload_to='resumes/')
+
+class WorkExperience(models.Model):
+    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='work_experince')
+    company_name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True,blank=True)
+    description = models.TextField(blank=True)
+
+class EducationalBackground(models.Model):
+    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='educational_background')
+    institution_name = models.CharField(max_length=150)
+    degree = models.CharField(max_length=100)
+    start_year = models.PositiveIntegerField(null=True,blank=True)
+    end_year = models.PositiveIntegerField(null=True,blank=True)

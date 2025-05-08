@@ -1,7 +1,9 @@
 from django import forms
+from django.forms import modelformset_factory
 
-from .models import (EmployerRegistrationForm, JobApplicationForm, JobPost,
-                     UserSignup)
+from .models import (Applicant, EduationalBackground, EducationalBackground,
+                     EmployerRegistrationForm, JobApplicationForm, JobPost,
+                     UserSignup, WorkExperience)
 
 
 class SignupForm(forms.ModelForm):
@@ -48,6 +50,17 @@ class EmployerRegistrationModelForm(forms.ModelForm):
             raise forms.ValidationError("Id must be positive")
         return employer_id
 class ApplicationForm(forms.ModelForm):
+    some_extra_field = forms.CharField(required=False)
     class Meta:
         model = JobApplicationForm
-        fields = ['name','email','resume']
+        fields = ['full_name','email','phone','cover_letter','resume']
+class WorkExperinceForm(forms.ModelForm):
+    class Meta:
+        model = WorkExperience
+        fields = ['company_name','position','start_date','end_date','description']
+
+class EducationalBackgroundForm(forms.ModelForm):
+    class Meta:
+        model = EducationalBackground
+        fields = ['institution_name','degree','start_year','end_year']
+WorkExperinceFormSet = modelformset_factory(WorkExperience,form=WorkExperinceForm,extra=1, can_delete = True)

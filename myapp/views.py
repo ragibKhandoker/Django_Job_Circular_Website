@@ -8,7 +8,8 @@ from django.views import View
 
 from .forms import (ApplicationForm, EmployerRegistrationForm,
                     JobApplicationForm, JobPostForm, SignupForm)
-from .models import JobPost, NetworkingJob, Techjob, UserSignup
+from .models import (JobApplicationForm, JobPost, NetworkingJob, Techjob,
+                     UserSignup)
 
 email_address=''
 password=''
@@ -165,17 +166,25 @@ def apply_job_view(request,job_id):
     return render(request,'apply_success.html',{'job':job})
 
 def apply_form(request,job_id):
-    job = get_object_or_404(JobPost, id=job_id)
+    job = get_object_or_404(JobPost,id = job_id)
     if request.method == 'POST':
-        form = ApplicationForm(request.POST,request.FILES)
-        if form.is_valid():
-            application = form.save(commit=False)
-            application.job = job
-            application.save()
-            return redirect('application_success')
-    else:
-        form = ApplicationForm()
-    return render(request,'apply_form.html',{'form':form,'job':job})
+        full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        cover_letter = request.POST.get('cover_letter')
+        resume = request.FILES.get('resume')
+        ApplicationForm.objects.create(
+            job=job,
+            full_name = full_name,
+            email=email,
+            phone = phone,
+            cover_letter = cover_letter,
+            resume = resume
+
+        )
+        messages.success(request,'Application submitted successfully!')
+        return redirect('application_success')
+    return render(request,'apply_form.html',{'jobs':job})
 
 def application_success(request):
     return render(request,'application_success.html')
