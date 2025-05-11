@@ -6,11 +6,11 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
-from .forms import (ApplicationForm, EducationalBackgroundFormSet,
+from .forms import (Applicant, ApplicationForm, EducationalBackgroundFormSet,
                     EmployerRegistrationForm, JobApplicationForm, JobPostForm,
-                    SignupForm, WorkExperienceFormSet, WorkExperinceFormset)
-from .models import (JobApplicationForm, JobPost, NetworkingJob, Techjob,
-                     UserSignup)
+                    SignupForm, WorkExperienceForm, WorkExperienceFormSet)
+from .models import (EducationalBackground, JobApplicationForm, JobPost,
+                     NetworkingJob, Techjob, UserSignup, WorkExperience)
 
 email_address=''
 password=''
@@ -147,6 +147,7 @@ def delete_job(request,job_id):
         messages.success(request,'Job deleted successfully!')
         return redirect('job_list')
     return render(request,'jobs/confirm_delete.html',{'jobs':job})
+
 def apply_view(request,job_id):
     job = get_object_or_404(JobPost,id=job_id)
     if request.method == 'POST':
@@ -166,39 +167,57 @@ def apply_job_view(request,job_id):
     job = get_object_or_404(JobPost,id = job_id)
     return render(request,'apply_success.html',{'job':job})
 
-def apply_form(request,job_id):
-    job = get_object_or_404(JobPost,id = job_id)
-    if request.method == 'POST':
-        full_name = request.POST.get('full_name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        cover_letter = request.POST.get('cover_letter')
-        resume = request.FILES.get('resume')
-        ApplicationForm.objects.create(
-            job=job,
-            full_name = full_name,
-            email=email,
-            phone = phone,
-            cover_letter = cover_letter,
-            resume = resume
+# def apply_form(request,job_id):
+#     job = get_object_or_404(JobPost,id = job_id)
+#     if request.method == 'POST':
+#         full_name = request.POST.get('full_name')
+#         email = request.POST.get('email')
+#         phone = request.POST.get('phone')
+#         cover_letter = request.POST.get('cover_letter')
+#         resume = request.FILES.get('resume')
+#         ApplicationForm.objects.create(
+#             job=job,
+#             full_name = full_name,
+#             email=email,
+#             phone = phone,
+#             cover_letter = cover_letter,
+#             resume = resume
 
-        )
-        messages.success(request,'Application submitted successfully!')
-        return redirect('application_success')
-    return render(request,'apply_form.html',{'jobs':job})
+#         )
+#         messages.success(request,'Application submitted successfully!')
+#         return redirect('application_success')
+#     return render(request,'apply_form.html',{'jobs':job})
+def apply_form(request, job_id):
+    job = get_object_or_404(JobPost, id=job_id)
+
+    if request.method == 'POST':
+        applicant_form = Applicant(request.POST, request.FILES)
+        work_formset = WorkExperienceFormSet(request.POST, prefix='work')
+        edu_formset = EducationalBackgroundFormSet(request.POST, prefix='edu')
+
+        if applicant_form.is_valid() and work_formset.is_valid() and edu_formset.is_valid():
+            applicant = applicant_form.save(commit=False)
+            applicant.job = job
+            applicant.save()
+
+            work_formset.instance = applicant
+            work_formset.save()
+
+            edu_formset.instance = applicant
+            edu_formset.save()
+
+            return redirect('success')  # Replace with your success URL
+    else:
+        applicant_form = Applicant()
+        work_formset = WorkExperienceFormSet(prefix='work')
+        edu_formset = EducationalBackgroundFormSet(prefix='edu')
+
+    return render(request, 'apply_form.html', {
+        'job': job,
+        'form': applicant_form,
+        'work_formset': work_formset,
+        'edu_formset': edu_formset
+    })
 
 def application_success(request):
     return render(request,'application_success.html')
-
-def apply_job(request):
-    if request.method == 'POST':
-        application_form = ApplicationForm(request.POST,request.FILES)
-        work_experience_formset = WorkExperienceFormSet(request.POST,prefix='work')
-        education_formset = EducationalBackgroundFormSet(request.POST,prefix='edu')
-        if application_form.is_valid() and work_experience_formset.is_valid() and education_formset.is_valid():
-            applicant = application_form.save()
-            for form in work_experience_formset:
-                instance = form.save(commit=False)
-                if form.cleaned_data and not form.cleaned_data.get('DELETE',False):
-                    instance.applicant = applicant
-                    instance.save()

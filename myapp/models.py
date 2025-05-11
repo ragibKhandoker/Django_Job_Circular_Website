@@ -120,35 +120,69 @@ class JobPost(models.Model):
         return f"{self.title} ({self.status})"
 
 class JobApplicationForm(models.Model):
-    job = models.ForeignKey(JobPost,on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=100)
-    email = models.EmailField()
-    phone = models.CharField(max_length=20,blank=True)
-    resume = models.FileField(upload_to='resume/')
-    cover_letter = models.TextField()
-    applied_on = models.DateTimeField(auto_now_add = True)
-
+    JOB_TYPES = [
+        ('FT', 'Full-time'),
+        ('PT', 'Part-time'),
+        ('CN', 'Contract'),
+        ('IN', 'Internship'),
+        ('RM', 'Remote'),
+    ]
+    job_id = models.ForeignKey(JobPost, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField(max_length=500)
+    location = models.CharField(max_length=100)
+    salary = models.CharField(max_length=100)
+    job_type = models.CharField(max_length=100,choices=JOB_TYPES)
+    posted_date = models.DateTimeField(auto_now_add=True)
+    deadline = models.DateField(auto_now_add=True)
+    requirements = models.TextField(max_length=500)
+    company_name = models.CharField(max_length=100)
+    industry = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
     def __str__(self):
-        return f"Application by {self.full_name} for {self.job.title}"
+        return f"{self.title} ({self.status})"
 
 class Applicant(models.Model):
+    job = models.ForeignKey(JobPost,on_delete=models.CASCADE)
     full_name = models.CharField(max_length=100)
-    email = models.CharField()
+    email = models.CharField(max_length=100)
     phone = models.CharField(max_length=20,blank=True)
+    address = models.CharField(max_length=100)
     cover_letter = models.TextField(blank=True)
     resume = models.FileField(upload_to='resumes/')
+    linkedIn_profile = models.URLField(max_length=100,blank=True)
+    portfolio_website = models.URLField(max_length=100,blank=True)
+    date_applied = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"Application by {self.full_name}"
 
 class WorkExperience(models.Model):
-    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='work_experince')
+    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='work_experience')
     company_name = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
+    responsibilities = models.TextField(blank=True)
     start_date = models.DateField()
     end_date = models.DateField(null=True,blank=True)
     description = models.TextField(blank=True)
+    currently_working = models.BooleanField(default=False)
+    def __str__(self):
+        return f"{self.position} at {self.company_name} ({self.start_date} - {self.end_date})"
 
 class EducationalBackground(models.Model):
+    DEGREE_TYPES = [
+        ('HS', 'High School'),
+        ('AD', 'Associate Degree'),
+        ('BD', "Bachelor's Degree"),
+        ('MD', "Master's Degree"),
+        ('PHD', 'Doctorate'),
+        ('OT', 'Other'),
+    ]
+    degree_type = models.CharField(max_length=100, choices=DEGREE_TYPES)
     applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='educational_background')
     institution_name = models.CharField(max_length=150)
-    degree = models.CharField(max_length=100)
     start_year = models.PositiveIntegerField(null=True,blank=True)
     end_year = models.PositiveIntegerField(null=True,blank=True)
+    grade = models.CharField(max_length=100,blank=True)
+    field_of_study = models.CharField(max_length=100,blank=True)
+    def __str__(self):
+        return f"{self.degree_type} from {self.institution_name} ({self.start_year} - {self.end_year})"

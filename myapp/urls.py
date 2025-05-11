@@ -5,7 +5,7 @@ from .views import (choose_role_view, employee_signup_view, home_view,
                     login_view, signup_view)
 
 urlpatterns = [
-    # path('', home_view, name='home'),
+   # path('', home_view, name='home'),
     # path('login/', login_view, name='login'),
     # path('signup/',choose_role_view,name = 'signup'),
     # path('signup/employee/',employee_signup_view,name ='employee_signup'),
@@ -25,7 +25,7 @@ urlpatterns = [
     path('signup/employee/', employee_signup_view, name='employee_signup'),
     path('signup/candidate/', signup_view, name='candidate_signup'),
     # Only keep one apply URL pattern
-    path('apply/<int:job_id>/', views.apply_form, name='apply_form'),  # This is the final URL
+    path('apply/<int:job_id>/', views.apply_form, name='apply_form'),
     path('apply/<int:job_id>/', views.apply_job_view, name='apply_job'),
 
     path('jobs/category/<str:category>/', views.job_category_view, name='job_category'),
@@ -34,5 +34,6 @@ urlpatterns = [
     path('job-list/', views.job_list, name='job_list'),
     path('jobs/total/', views.total_jobs_view, name='TotalJob'),
     path('application-success/', views.application_success, name='application_success'),
+
 
 ]

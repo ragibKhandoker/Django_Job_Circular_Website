@@ -1,167 +1,199 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Apply for {{ job.title }}</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #e0e7ff, #f5f7fa);
-            margin: 0;
-            padding: 0;
-            color: #2d3748;
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container application-container my-5">
+    <h1 class="text-center mb-4">Apply for {{ job.title }}</h1>
+    <p class="text-center mb-4">{{ job.company_name }}</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Personal Information Section -->
+        <div class="form-section">
+            <h3>Personal Information</h3>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Full Name</label>
+                    {{ application_form.full_name }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Email</label>
+                    {{ application_form.email }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Phone</label>
+                    {{ application_form.phone }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Address</label>
+                    {{ application_form.address }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">LinkedIn Profile</label>
+                    {{ application_form.linkedIn_profile }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Portfolio Website</label>
+                    {{ application_form.portfolio_website }}
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Resume (PDF only)</label>
+                    {{ application_form.resume }}
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Cover Letter</label>
+                    {{ application_form.cover_letter }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Dual Column Section for Work and Education -->
+        <div class="row">
+            <!-- Work Experience -->
+            <div class="col-md-6 form-section">
+                <h3>Work Experience</h3>
+                {{ work_formset.management_form }}
+                <div id="work-experience-forms">
+                    {% for form in work_formset %}
+                        <div class="work-form">
+                            {{ form.as_p }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Educational Background -->
+            <div class="col-md-6 form-section">
+                <h3>Educational Background</h3>
+                {{ edu_formset.management_form }}
+                <div id="education-forms">
+                    {% for form in edu_formset %}
+                        <div class="edu-form">
+                            {{ form.as_p }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 my-4">
+            <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function cloneForm(prefix, containerId, btnId) {
+            const addBtn = document.getElementById(btnId);
+            const container = document.getElementById(containerId);
+            addBtn.addEventListener("click", function () {
+                const totalForms = document.getElementById(`id_${prefix}-TOTAL_FORMS`);
+                const formCount = parseInt(totalForms.value);
+                const emptyForm = container.querySelector(`.${prefix}-form`) || container.firstElementChild.cloneNode(true);
+
+                emptyForm.querySelectorAll('input, select, textarea').forEach(el => el.value = '');
+
+                emptyForm.innerHTML = emptyForm.innerHTML.replaceAll(`-${formCount - 1}-`, `-${formCount}-`);
+                container.appendChild(emptyForm);
+                totalForms.value = formCount + 1;
+            });
         }
 
-        .container {
-            max-width: 720px;
-            margin: 50px auto;
-            padding: 40px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-        }
+        cloneForm('work', 'work-experience-forms', 'add-work-experience');
+        cloneForm('edu', 'education-forms', 'add-edu-btn');
+    });
+</script>
 
-        .container:hover {
-            transform: scale(1.01);
-        }
+<style>
+    .application-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        h1 {
-            text-align: center;
-            color: #2b2d42;
-            font-size: 2rem;
+    .form-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .form-section h3 {
+        margin-bottom: 20px;
+        color: #0d6efd;
+        font-size: 1.5rem;
+        border-bottom: 2px solid #0d6efd;
+        padding-bottom: 10px;
+    }
+
+    .form-label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .btn-secondary {
+        background-color: #f0f0f0;
+        border-color: #ccc;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background-color: #e0e0e0;
+        border-color: #bbb;
+        color: #000;
+    }
+
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+    .btn-add-more {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        border-radius: 4px;
+    }
+
+    .edu-form, .work-form {
+        background: #ffffff;
+        padding: 15px;
+        margin-bottom: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-top: 5px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: #0d6efd;
+        outline: none;
+    }
+
+    .d-grid .btn-lg {
+        padding: 15px;
+        font-size: 1.2rem;
+    }
+
+    @media (max-width: 767px) {
+        .row > .col-md-6 {
             margin-bottom: 30px;
-            position: relative;
         }
-
-        h1::after {
-            content: '';
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            display: block;
-            margin: 12px auto 0;
-            border-radius: 2px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 6px;
-            color: #4b5563;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        textarea {
-            padding: 12px 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: #f9fafb;
-            transition: 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="tel"]:focus,
-        textarea:focus {
-            border-color: #6366f1;
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
-            outline: none;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 140px;
-        }
-
-        input[type="file"] {
-            padding: 12px;
-            border: 2px dashed #cbd5e0;
-            background: #f8fafc;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            color: #4a5568;
-        }
-
-        .file-upload label {
-            margin-bottom: 6px;
-        }
-
-        button[type="submit"] {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
-            border: none;
-            padding: 16px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s ease;
-            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
-        }
-
-        button[type="submit"]:hover {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Apply for: {{ job.title }}</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="hidden" name="job_id" value="{{ job.id }}">
-
-            <div class="form-group">
-                <label>Full Name:</label>
-                <input type="text" name="full_name" required>
-            </div>
-
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label>Phone:</label>
-                <input type="tel" name="phone">
-            </div>
-
-            <div class="form-group">
-                <label>Cover Letter:</label>
-                <textarea name="cover_letter" rows="5"></textarea>
-            </div>
-
-            <div class="form-group file-upload">
-                <label>Resume (PDF only):</label>
-                <input type="file" name="resume" accept=".pdf" required>
-            </div>
-
-            <button type="submit">Submit Application</button>
-        </form>
-    </div>
-</body>
-</html>
+    }
+</style>
+{% endblock %}

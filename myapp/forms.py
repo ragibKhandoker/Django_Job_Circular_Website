@@ -52,16 +52,60 @@ class EmployerRegistrationModelForm(forms.ModelForm):
 class ApplicationForm(forms.ModelForm):
     some_extra_field = forms.CharField(required=False)
     class Meta:
-        model = JobApplicationForm
-        fields = ['full_name','email','phone','cover_letter','resume']
+        model = Applicant
+        fields = [
+            'full_name','email', 'phone', 'address',
+            'resume', 'cover_letter','linkedIn_profile',
+            'portfolio_website'
+        ]
+        widgets = {
+            'cover_letter': forms.Textarea(attrs={'rows': 4}),
+            'linkedin_profile': forms.URLInput(attrs={'placeholder':'LinkedIn Profile URL'}),
+            'portfolio_website':forms.URLInput(attrs={'placeholder':'Portfolio Website URL'}),
+        }
 class WorkExperienceForm(forms.ModelForm):
     class Meta:
         model = WorkExperience
-        fields = ['company_name','position','start_date','end_date','description']
+        fields = [
+            'company_name',
+            'position',
+            'responsibilities',
+            'start_date',
+            'end_date',
+            'description',
+            'currently_working'
+        ]
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type':'date'}),
+            'end_date': forms.DateInput(attrs={'type':'date'}),
+            'responsibilities': forms.Textarea(attrs={'rows':4}),
+            'description':forms.Textarea(attrs={'rows':4}),
+        }
 
 class EducationalBackgroundForm(forms.ModelForm):
     class Meta:
         model = EducationalBackground
-        fields = ['institution_name','degree','start_year','end_year']
-WorkExperienceFormSet = modelformset_factory(WorkExperience,form=WorkExperienceForm,extra=1, can_delete = True)
-EducationalBackgroundFormSet = modelformset_factory(EducationalBackground,form=EducationalBackgroundForm,extra=1,can_delete= True)
+        fields = [
+            'institution_name', 'degree_type', 'field_of_study',
+            'start_year', 'end_year', 'grade',
+
+        ]
+        widgets = {
+           'start_year':forms.NumberInput(attrs={'min':1900,
+                                                 'max':2100,
+                                                 'placeholder':'YYYY'}),
+           'end_year':forms.NumberInput(attrs={'min':1900,
+                                               'max':2100,
+                                               'placeholder':'YYYY'}),
+           'description':forms.Textarea(attrs={'rows':4}),
+
+        }
+
+WorkExperienceFormSet = modelformset_factory(
+    WorkExperience,
+    form=WorkExperienceForm,
+)
+EducationalBackgroundFormSet = modelformset_factory(
+    EducationalBackground,
+    form=EducationalBackgroundForm,
+)
