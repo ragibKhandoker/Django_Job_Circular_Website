@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
-from .forms import (Applicant, ApplicationForm, EducationalBackgroundFormSet,
+from .forms import (ApplicantForm, EducationalBackgroundFormSet,
                     EmployerRegistrationForm, JobApplicationForm, JobPostForm,
                     SignupForm, WorkExperienceForm, WorkExperienceFormSet)
 from .models import (EducationalBackground, JobApplicationForm, JobPost,
@@ -191,7 +191,7 @@ def apply_form(request, job_id):
     job = get_object_or_404(JobPost, id=job_id)
 
     if request.method == 'POST':
-        applicant_form = Applicant(request.POST, request.FILES)
+        applicant_form = ApplicantForm(request.POST, request.FILES)
         work_formset = WorkExperienceFormSet(request.POST, prefix='work')
         edu_formset = EducationalBackgroundFormSet(request.POST, prefix='edu')
 
@@ -206,9 +206,11 @@ def apply_form(request, job_id):
             edu_formset.instance = applicant
             edu_formset.save()
 
-            return redirect('success')  # Replace with your success URL
+            return redirect('apply_success')
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
-        applicant_form = Applicant()
+        applicant_form = ApplicantForm()
         work_formset = WorkExperienceFormSet(prefix='work')
         edu_formset = EducationalBackgroundFormSet(prefix='edu')
 
@@ -221,3 +223,40 @@ def apply_form(request, job_id):
 
 def application_success(request):
     return render(request,'application_success.html')
+
+def apply_job(request,job_id):
+    job = JobPost.objects.get(id=job_id)
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST,request.FILES)
+        if form.is_valid():
+            applicant = form.save(commit=False)
+            applicant.job = job
+            applicant.save()
+            return redirect('success_page')
+    else:
+        form = ApplicationForm()
+    return render(request,'apply_form.html',{'application_form':form,'job':job})
+def save_personal_info(request):
+    if request.method == 'POST':
+        applicant = Applicant(
+            full_name = request.POST.get('full_name'),
+            email = request.POST.get('email'),
+            phone = request.POST.get('phone'),
+            address = request.POST.get('address'),
+            cover_letter = request.POST.get('cover_letter'),
+            resume = request.FILES.get('resume'),
+            linkedIn_profile = request.POST.get('linkedIn_profile'),
+            portfolio_website = request.POST.get('portfolio_website')
+        )
+        applicant.save()
+        return redirect('success_page')
+    return render(request,'apply_form.html')
+def application_view(request):
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success_page')
+    else:
+        form = ApplicationForm()
+    return render(request,'application.html',{'form':form})

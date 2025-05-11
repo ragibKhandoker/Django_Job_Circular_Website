@@ -154,7 +154,7 @@ class Applicant(models.Model):
     portfolio_website = models.URLField(max_length=100,blank=True)
     date_applied = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return f"Application by {self.full_name}"
+        return self.ful_name
 
 class WorkExperience(models.Model):
     applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='work_experience')

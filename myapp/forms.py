@@ -49,11 +49,11 @@ class EmployerRegistrationModelForm(forms.ModelForm):
         if employer_id is not None and employer_id < 0:
             raise forms.ValidationError("Id must be positive")
         return employer_id
-class ApplicationForm(forms.ModelForm):
-    some_extra_field = forms.CharField(required=False)
+class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
         fields = [
+
             'full_name','email', 'phone', 'address',
             'resume', 'cover_letter','linkedIn_profile',
             'portfolio_website'
@@ -109,3 +109,16 @@ EducationalBackgroundFormSet = modelformset_factory(
     EducationalBackground,
     form=EducationalBackgroundForm,
 )
+class JobApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Applicant
+        fields = [
+            'full_name', 'email', 'phone', 'address',
+            'resume', 'cover_letter','linkedIn_profile',
+            'portfolio_website'
+        ]
+        widgets = {
+            'cover_letter': forms.Textarea(attrs={'rows': 4}),
+            'linkedin_profile': forms.URLInput(attrs={'placeholder':'LinkedIn Profile URL'}),
+            'portfolio_website':forms.URLInput(attrs={'placeholder':'Portfolio Website URL'}),
+        }

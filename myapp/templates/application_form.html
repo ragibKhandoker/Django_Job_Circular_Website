@@ -91,6 +91,22 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
+        /* Add to your style section */
+.delete-checkbox {
+    margin-left: 10px;
+}
+
+.formset-block {
+    position: relative;
+}
+
+.formset-block .delete-row {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: red;
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
@@ -100,10 +116,8 @@
         {% csrf_token %}
 
         <!-- Applicant Form -->
-        <fieldset>
-            <legend>Applicant Information</legend>
-            {{ applicant_form.as_p }}
-        </fieldset>
+        {% csrf_token %}
+    {{ form.as_p }}
 
         <!-- Work Experience FormSet -->
         <fieldset>
@@ -128,6 +142,39 @@
         </fieldset>
 
         <button type="submit">Submit Application</button>
+        <!-- After your form closing tag (before </body>) -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add more button for work experience
+    document.querySelector('.add-work-experience').addEventListener('click', function() {
+        cloneMore('div.formset-block:first', 'work');
+    });
+
+    // Add more button for education
+    document.querySelector('.add-education').addEventListener('click', function() {
+        cloneMore('div.formset-block:first', 'edu');
+    });
+
+    function cloneMore(selector, prefix) {
+        const totalForms = document.getElementById(`id_${prefix}-TOTAL_FORMS`);
+        const currentForms = document.querySelectorAll(`div.formset-block[id^="${prefix}-"]`);
+        const formNum = currentForms.length;
+        const newForm = document.querySelector(selector).cloneNode(true);
+
+        // Update all names/ids
+        newForm.innerHTML = newForm.innerHTML.replace(
+            new RegExp(`${prefix}-(\\d+)-`, 'g'),
+            `${prefix}-${formNum}-`
+        );
+
+        // Insert before the add button
+        document.querySelector(`fieldset legend:contains("${prefix === 'work' ? 'Work Experience' : 'Educational Background'}")`)
+            .parentNode.insertBefore(newForm, document.querySelector(`.add-${prefix}`));
+
+        totalForms.value = formNum + 1;
+    }
+});
+</script>
     </form>
 </body>
 </html>

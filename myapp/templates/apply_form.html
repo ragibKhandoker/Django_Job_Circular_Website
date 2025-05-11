@@ -11,40 +11,12 @@
         <!-- Personal Information Section -->
         <div class="form-section">
             <h3>Personal Information</h3>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Full Name</label>
-                    {{ application_form.full_name }}
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Email</label>
-                    {{ application_form.email }}
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Phone</label>
-                    {{ application_form.phone }}
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Address</label>
-                    {{ application_form.address }}
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">LinkedIn Profile</label>
-                    {{ application_form.linkedIn_profile }}
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Portfolio Website</label>
-                    {{ application_form.portfolio_website }}
-                </div>
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Resume (PDF only)</label>
-                    {{ application_form.resume }}
-                </div>
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Cover Letter</label>
-                    {{ application_form.cover_letter }}
-                </div>
-            </div>
+            {{ form.as_p }}
+
+            {% comment %} {{ form.as_p }} {% endcomment %}
+
+
+
         </div>
 
         <!-- Dual Column Section for Work and Education -->
@@ -197,3 +169,23 @@
     }
 </style>
 {% endblock %}
+
+<h2>Apply for {{ job.title }}</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ applicant_form.as_p }}
+
+    <h3>Work Experience</h3>
+    {{ work_formset.management_form }}
+    {% for form in work_formset %}
+        {{ form.as_p }}
+    {% endfor %}
+
+    <h3>Educational Background</h3>
+    {{ edu_formset.management_form }}
+    {% for form in edu_formset %}
+        {{ form.as_p }}
+    {% endfor %}
+
+    <button type="submit">Submit</button>
+</form>
