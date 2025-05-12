@@ -104,10 +104,12 @@ class EducationalBackgroundForm(forms.ModelForm):
 WorkExperienceFormSet = modelformset_factory(
     WorkExperience,
     form=WorkExperienceForm,
+    extra=0
 )
 EducationalBackgroundFormSet = modelformset_factory(
     EducationalBackground,
     form=EducationalBackgroundForm,
+    extra=0
 )
 class JobApplicationForm(forms.ModelForm):
     class Meta:

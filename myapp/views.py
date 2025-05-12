@@ -235,44 +235,50 @@ def apply_job_view(request,job_id):
 #     })
 
 def apply_form(request, job_id):
-    # Fetch the job to which the application is being made
     job = get_object_or_404(JobPost, id=job_id)
 
     if request.method == 'POST':
-        # Initialize the forms and formsets
         applicant_form = ApplicantForm(request.POST, request.FILES)
         work_formset = WorkExperienceFormSet(request.POST, prefix='work')
         edu_formset = EducationalBackgroundFormSet(request.POST, prefix='edu')
 
-        # Check if all forms and formsets are valid
         if applicant_form.is_valid() and work_formset.is_valid() and edu_formset.is_valid():
-            # Step 1: Save the Applicant instance without committing to DB yet
             applicant = applicant_form.save(commit=False)
-            applicant.job = job  # Associate the job with the applicant
-            applicant.save()  # Now save the applicant to DB
+            applicant.job = job
+            applicant.save()
+            applicant.work_experiences.all()
+            applicant.educational_backgrounds.all()
 
-            # Step 2: Associate the formsets with the applicant instance
-            # Work Experience Formset
-            for work_exp in work_formset.save(commit=False):  # Get unsaved formset objects
-                work_exp.applicant = applicant  # Link each WorkExperience to the applicant
+
+            # applicant.workexperience_set.all().delete()
+            # applicant.educationalbackground_set.all().delete()
+
+            for work_exp in work_formset.save(commit=False):
+                work_exp.applicant = applicant
                 work_exp.save()
 
-            # Educational Background Formset
-            for edu in edu_formset.save(commit=False):  # Get unsaved formset objects
-                edu.applicant = applicant  # Link each EducationalBackground to the applicant
+            for edu in edu_formset.save(commit=False):
+                edu.applicant = applicant
                 edu.save()
+            # return redirect('apply_success')
+            # return render(request, 'application_submitted.html', {'applicant': applicant})
+            return render(request, 'application_submitted.html', {
+    'applicant': applicant,
+    'work_experiences': applicant.work_experiences.all(),
+    'educational_backgrounds': applicant.educational_backgrounds.all()
+})
 
-            # Step 3: Redirect to the success page after saving everything
-            return redirect('apply_success')
+
+
         else:
+            print(applicant_form.errors)
+            print(work_formset.errors)
+            print(edu_formset.errors)
             messages.error(request, "Please correct the errors below.")
     else:
-        # If the request is GET, initialize empty forms and formsets
         applicant_form = ApplicantForm()
         work_formset = WorkExperienceFormSet(prefix='work')
         edu_formset = EducationalBackgroundFormSet(prefix='edu')
-
-    # Render the template with the forms and formsets
     return render(request, 'apply_form.html', {
         'job': job,
         'form': applicant_form,
@@ -285,10 +291,6 @@ def apply_form(request, job_id):
 
 
 
-
-
-def application_success(request):
-    return render(request,'application_success.html')
 
 def apply_job(request,job_id):
     job = JobPost.objects.get(id=job_id)

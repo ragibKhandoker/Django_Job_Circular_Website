@@ -154,10 +154,10 @@ class Applicant(models.Model):
     portfolio_website = models.URLField(max_length=100,blank=True)
     date_applied = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return self.full_name
+        return f"{self.full_name}, {self.email}, {self.phone}, {self.address}, {self.cover_letter}, {self.resume}, {self.linkedin_profile}, {self.portfolio_website}"
 
 class WorkExperience(models.Model):
-    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='work_experience')
+    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='work_experiences')
     company_name = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
     responsibilities = models.TextField(blank=True)
@@ -166,7 +166,14 @@ class WorkExperience(models.Model):
     description = models.TextField(blank=True)
     currently_working = models.BooleanField(default=False)
     def __str__(self):
-        return f"{self.position} at {self.company_name} ({self.start_date} - {self.end_date})"
+        return f"{self.company_name},{self.position},{self.start_date},{self.end_date},{self.responsibilities},{self.description},{self.currently_working}"
+    def save(self, *args, **kwargs):
+        if self.currently_working:
+            self.end_date = None
+        else:
+            if self.end_date and self.end_date < self.start_date:
+                raise ValueError("End date cannot be before start date.")
+        super().save(*args, **kwargs)
 
 class EducationalBackground(models.Model):
     DEGREE_TYPES = [
@@ -178,11 +185,15 @@ class EducationalBackground(models.Model):
         ('OT', 'Other'),
     ]
     degree_type = models.CharField(max_length=100, choices=DEGREE_TYPES)
-    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='educational_background')
+    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='educational_backgrounds')
     institution_name = models.CharField(max_length=150)
     start_year = models.PositiveIntegerField(null=True,blank=True)
     end_year = models.PositiveIntegerField(null=True,blank=True)
     grade = models.CharField(max_length=100,blank=True)
     field_of_study = models.CharField(max_length=100,blank=True)
     def __str__(self):
-        return f"{self.degree_type} from {self.institution_name} ({self.start_year} - {self.end_year})"
+        return f"{self.degree_type}, {self.institution_name}, {self.start_year}, {self.end_year}, {self.grade}, {self.field_of_study}"
+    def save(self, *args, **kwargs):
+        if self.start_year and self.end_year and self.end_year < self.start_year:
+            raise ValueError("End year cannot be before start year.")
+        super().save(*args, **kwargs)

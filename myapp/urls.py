@@ -34,7 +34,9 @@ urlpatterns = [
     path('job-list/', views.job_list, name='job_list'),
     path('jobs/total/', views.total_jobs_view, name='TotalJob'),
     path('application-success/', views.application_success, name='application_success'),
-     path('apply/success/', views.apply_success, name='apply_success'),
+     path('apply-success/', views.apply_success, name='apply_success'),
+   # path('apply/success/', views.apply_success, name='apply_success'),
+
 
 
 ]

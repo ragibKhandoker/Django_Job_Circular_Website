@@ -9,6 +9,130 @@
     <a href="/">Return to Home</a>
 </body>
 </html> {% endcomment %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Application Submitted</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #80deea);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 700px;
+        }
+
+        h1 {
+            color: #00796b;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        a {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background-color: #00796b;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: background 0.3s;
+            text-align: center;
+        }
+
+        a:hover {
+            background-color: #004d40;
+        }
+
+        .data-block {
+            margin-top: 30px;
+        }
+
+        .data-section {
+            background: #f0f0f0;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        .data-section h3 {
+            margin-top: 0;
+            color: #004d40;
+        }
+
+        .data-item {
+            margin: 5px 0;
+        }
+
+        .section-title {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #00695c;
+            border-bottom: 2px solid #b2dfdb;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Application Submitted Successfully!</h1>
+        <p>Thank you for your application. We'll review it and get back to you soon.</p>
+        <a href="/">Return to Home</a>
+
+        <!-- ✅ Dynamic Data Display Section -->
+        <div class="data-block">
+            <div class="section-title">Applicant Information</div>
+            <div class="data-section">
+                <div class="data-item"><strong>Name:</strong> {{ applicant.name }}</div>
+                <div class="data-item"><strong>Email:</strong> {{ applicant.email }}</div>
+                <div class="data-item"><strong>Phone:</strong> {{ applicant.phone }}</div>
+                <div class="data-item"><strong>Address:</strong> {{ applicant.address }}</div>
+            </div>
+
+            <div class="section-title">Work Experience</div>
+            {% for exp in applicant.work_experiences.all %}
+            <div class="data-section">
+                <div class="data-item"><strong>Company:</strong> {{ exp.company_name }}</div>
+                <div class="data-item"><strong>Position:</strong> {{ exp.position }}</div>
+                <div class="data-item"><strong>Duration:</strong> {{ exp.duration }}</div>
+            </div>
+            {% empty %}
+            <p>No work experience submitted.</p>
+            {% endfor %}
+
+            <div class="section-title">Educational Background</div>
+            {% for edu in applicant.educational_backgrounds.all %}
+            <div class="data-section">
+                <div class="data-item"><strong>Institution:</strong> {{ edu.institution }}</div>
+                <div class="data-item"><strong>Degree:</strong> {{ edu.degree }}</div>
+                <div class="data-item"><strong>Year:</strong> {{ edu.year }}</div>
+            </div>
+            {% empty %}
+            <p>No educational background submitted.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+
 {% comment %} <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -24,11 +24,14 @@
             <!-- Work Experience -->
             <div class="col-md-6 form-section">
                 <h3>Work Experience</h3>
+
                 {{ work_formset.management_form }}
                 <div id="work-experience-forms">
                     {% for form in work_formset %}
                         <div class="work-form">
                             {{ form.as_p }}
+                            {{ form.DELETE }}
+
                         </div>
                     {% endfor %}
                 </div>
@@ -42,6 +45,7 @@
                     {% for form in edu_formset %}
                         <div class="edu-form">
                             {{ form.as_p }}
+                            {{ form.DELETE }}
                         </div>
                     {% endfor %}
                 </div>
