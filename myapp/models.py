@@ -127,7 +127,7 @@ class JobApplicationForm(models.Model):
         ('IN', 'Internship'),
         ('RM', 'Remote'),
     ]
-    job_id = models.ForeignKey(JobPost, on_delete=models.CASCADE)
+    job = models.ForeignKey(JobPost, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(max_length=500)
     location = models.CharField(max_length=100)
@@ -143,18 +143,18 @@ class JobApplicationForm(models.Model):
         return f"{self.title} ({self.status})"
 
 class Applicant(models.Model):
-    job = models.ForeignKey(JobPost,on_delete=models.CASCADE)
+    job = models.ForeignKey(JobPost,on_delete=models.CASCADE,db_column='job')
     full_name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
     phone = models.CharField(max_length=20,blank=True)
     address = models.CharField(max_length=100)
     cover_letter = models.TextField(blank=True)
     resume = models.FileField(upload_to='resumes/')
-    linkedIn_profile = models.URLField(max_length=100,blank=True)
+    linkedin_profile = models.URLField(max_length=100,blank=True)
     portfolio_website = models.URLField(max_length=100,blank=True)
     date_applied = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return self.ful_name
+        return self.full_name
 
 class WorkExperience(models.Model):
     applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='work_experience')

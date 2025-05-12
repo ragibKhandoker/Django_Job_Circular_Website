@@ -169,23 +169,3 @@
     }
 </style>
 {% endblock %}
-
-<h2>Apply for {{ job.title }}</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ applicant_form.as_p }}
-
-    <h3>Work Experience</h3>
-    {{ work_formset.management_form }}
-    {% for form in work_formset %}
-        {{ form.as_p }}
-    {% endfor %}
-
-    <h3>Educational Background</h3>
-    {{ edu_formset.management_form }}
-    {% for form in edu_formset %}
-        {{ form.as_p }}
-    {% endfor %}
-
-    <button type="submit">Submit</button>
-</form>

@@ -55,12 +55,12 @@ class ApplicantForm(forms.ModelForm):
         fields = [
 
             'full_name','email', 'phone', 'address',
-            'resume', 'cover_letter','linkedIn_profile',
+            'resume', 'cover_letter','linkedin_profile',
             'portfolio_website'
         ]
         widgets = {
             'cover_letter': forms.Textarea(attrs={'rows': 4}),
-            'linkedin_profile': forms.URLInput(attrs={'placeholder':'LinkedIn Profile URL'}),
+            'linkedin_profile': forms.URLInput(attrs={'placeholder':'Linkedin Profile URL'}),
             'portfolio_website':forms.URLInput(attrs={'placeholder':'Portfolio Website URL'}),
         }
 class WorkExperienceForm(forms.ModelForm):
@@ -114,7 +114,7 @@ class JobApplicationForm(forms.ModelForm):
         model = Applicant
         fields = [
             'full_name', 'email', 'phone', 'address',
-            'resume', 'cover_letter','linkedIn_profile',
+            'resume', 'cover_letter','linkedin_profile',
             'portfolio_website'
         ]
         widgets = {

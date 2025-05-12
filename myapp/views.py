@@ -140,13 +140,17 @@ def job_list(request):
     }
     return render(request,'job_list.html',context)
 
-def delete_job(request,job_id):
-    job = get_object_or_404(JobPost, id=job_id)
-    if request.method == 'POST':
-        job.delete()
-        messages.success(request,'Job deleted successfully!')
-        return redirect('job_list')
-    return render(request,'jobs/confirm_delete.html',{'jobs':job})
+# def delete_job(request,job_id):
+#     job = get_object_or_404(JobPost, id=job_id)
+#     if request.method == 'POST':
+#         job.delete()
+#         messages.success(request,'Job deleted successfully!')
+#         return redirect('job_list')
+#     return render(request,'jobs/confirm_delete.html',{'jobs':job})
+def delete_job(request, job_id):
+    # Delete the job and related applications
+    JobPost.objects.filter(id=job_id).delete()
+    return redirect('job_list')
 
 def apply_view(request,job_id):
     job = get_object_or_404(JobPost,id=job_id)
@@ -187,39 +191,101 @@ def apply_job_view(request,job_id):
 #         messages.success(request,'Application submitted successfully!')
 #         return redirect('application_success')
 #     return render(request,'apply_form.html',{'jobs':job})
+
+
+
+
+
+
+
+
+
+# def apply_form(request, job_id):
+#     job = get_object_or_404(JobPost, id=job_id)
+
+#     if request.method == 'POST':
+#         applicant_form = ApplicantForm(request.POST, request.FILES)
+#         work_formset = WorkExperienceFormSet(request.POST, prefix='work')
+#         edu_formset = EducationalBackgroundFormSet(request.POST, prefix='edu')
+
+#         if applicant_form.is_valid() and work_formset.is_valid() and edu_formset.is_valid():
+#             applicant = applicant_form.save(commit=False)
+#             applicant.job = job
+#             applicant.save()
+
+#             work_formset.instance = applicant
+#             work_formset.save()
+
+#             edu_formset.instance = applicant
+#             edu_formset.save()
+
+#             return redirect('apply_success')
+#         else:
+#             messages.error(request, "Please correct the errors below.")
+#     else:
+#         applicant_form = ApplicantForm()
+#         work_formset = WorkExperienceFormSet(prefix='work')
+#         edu_formset = EducationalBackgroundFormSet(prefix='edu')
+
+#     return render(request, 'apply_form.html', {
+#         'job': job,
+#         'form': applicant_form,
+#         'work_formset': work_formset,
+#         'edu_formset': edu_formset
+#     })
+
 def apply_form(request, job_id):
+    # Fetch the job to which the application is being made
     job = get_object_or_404(JobPost, id=job_id)
 
     if request.method == 'POST':
+        # Initialize the forms and formsets
         applicant_form = ApplicantForm(request.POST, request.FILES)
         work_formset = WorkExperienceFormSet(request.POST, prefix='work')
         edu_formset = EducationalBackgroundFormSet(request.POST, prefix='edu')
 
+        # Check if all forms and formsets are valid
         if applicant_form.is_valid() and work_formset.is_valid() and edu_formset.is_valid():
+            # Step 1: Save the Applicant instance without committing to DB yet
             applicant = applicant_form.save(commit=False)
-            applicant.job = job
-            applicant.save()
+            applicant.job = job  # Associate the job with the applicant
+            applicant.save()  # Now save the applicant to DB
 
-            work_formset.instance = applicant
-            work_formset.save()
+            # Step 2: Associate the formsets with the applicant instance
+            # Work Experience Formset
+            for work_exp in work_formset.save(commit=False):  # Get unsaved formset objects
+                work_exp.applicant = applicant  # Link each WorkExperience to the applicant
+                work_exp.save()
 
-            edu_formset.instance = applicant
-            edu_formset.save()
+            # Educational Background Formset
+            for edu in edu_formset.save(commit=False):  # Get unsaved formset objects
+                edu.applicant = applicant  # Link each EducationalBackground to the applicant
+                edu.save()
 
+            # Step 3: Redirect to the success page after saving everything
             return redirect('apply_success')
         else:
             messages.error(request, "Please correct the errors below.")
     else:
+        # If the request is GET, initialize empty forms and formsets
         applicant_form = ApplicantForm()
         work_formset = WorkExperienceFormSet(prefix='work')
         edu_formset = EducationalBackgroundFormSet(prefix='edu')
 
+    # Render the template with the forms and formsets
     return render(request, 'apply_form.html', {
         'job': job,
         'form': applicant_form,
         'work_formset': work_formset,
         'edu_formset': edu_formset
     })
+
+
+
+
+
+
+
 
 def application_success(request):
     return render(request,'application_success.html')
@@ -249,10 +315,11 @@ def save_personal_info(request):
             portfolio_website = request.POST.get('portfolio_website')
         )
         applicant.save()
-        return redirect('success_page')
+        return redirect('application_success')
     return render(request,'apply_form.html')
 def application_view(request):
     if request.method == 'POST':
+        print("Form submitted")
         form = ApplicationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -260,3 +327,8 @@ def application_view(request):
     else:
         form = ApplicationForm()
     return render(request,'application.html',{'form':form})
+def application_success(request):
+    return render(request,'application_success.html')
+
+def apply_success(request):
+    return render(request, 'apply_success.html')
