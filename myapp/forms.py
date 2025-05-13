@@ -1,18 +1,55 @@
 from django import forms
 from django.forms import modelformset_factory
 
-from .models import (Applicant, EducationalBackground,
-                     EmployerRegistrationForm, JobApplicationForm, JobPost,
-                     UserSignup, WorkExperience)
+from .models import (Applicant, Candidate, EducationalBackground, Employee,
+                     JobApplicationForm, JobPost, WorkExperience)
 
 
-class SignupForm(forms.ModelForm):
-    user_id = forms.CharField(required=False)
-    password = forms.CharField(widget=forms.PasswordInput,required=False)
-
+class EmployeeRegistrationForm(forms.ModelForm):
     class Meta:
-        model = UserSignup
-        fields = ['fullname', 'email', 'password']
+        model = Employee
+        fields = [
+            'company_name', 'full_name', 'email', 'password',
+            'confirm_password', 'phone', 'address', 'company_location'
+        ]
+        widgets = {
+            'password': forms.PasswordInput(),
+            'confirm_password': forms.PasswordInput(),
+        }
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        if Employee.objects.filter(email=email).exists():
+            raise forms.ValidationError("Email already exists.")
+        return cleaned_data
+
+
+class CandidateRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = Candidate
+        fields = [
+            'full_name', 'email', 'password', 'confirm_password',
+            'phone', 'address', 'location'
+        ]
+        widgets = {
+            'password': forms.PasswordInput(),
+            'confirm_password': forms.PasswordInput(),
+        }
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+        return user
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        if Candidate.objects.filter(email=email).exists():
+            raise forms.ValidationError("Email already exists.")
+        return cleaned_data
+
+
+
 
 class JobPostForm(forms.ModelForm):
     class Meta:
@@ -28,27 +65,6 @@ class JobPostForm(forms.ModelForm):
         if not clean_data.get('status'):
             raise forms.ValidationError("Select at least one job")
 
-class EmployerRegistrationModelForm(forms.ModelForm):
-    class Meta:
-        model = EmployerRegistrationForm
-        fields = [
-            'Employer_id',
-            'company_name',
-            'email',
-            'phone',
-            'password',
-            'location',
-            'description',
-        ]
-        widgets = {
-            'password':forms.PasswordInput(attrs={'placeholder':'Create a secure password'}),
-            'description':forms.Textarea(attrs={'rows':4}),
-        }
-    def clean_Employer_id(self):
-        employer_id = self.cleaned_data.get('Employer_id')
-        if employer_id is not None and employer_id < 0:
-            raise forms.ValidationError("Id must be positive")
-        return employer_id
 class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant

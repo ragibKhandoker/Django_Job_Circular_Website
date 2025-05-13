@@ -1,55 +1,50 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
 
-class UserSignup(models.Model):
-    fullname = models.CharField(max_length=100,null="True")
-    email = models.EmailField(null="True")
-    password = models.CharField(max_length=100,null="True")
-    confirm_password = models.CharField(max_length=100,null="True")
-
-class ApplicantSignupForm(forms.Form):
-    applicant_id = models.CharField(default=0)
-    name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100)
-    password = models.CharField(max_length=128)
-    phone = models.CharField(max_length=15)
-    address = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.fullname
-
-class EmployerRegistrationForm(models.Model):
-    Employer_id = models.IntegerField(default=0)
-    location = models.CharField(max_length=100)
-    description = models.TextField()
-    email = models.EmailField(max_length=100)
-    phone = models.CharField(max_length=15)
-    password = models.CharField(max_length=128)
+class Employee(models.Model):
+    employer_id = models.AutoField(primary_key=True)
     company_name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100,unique=True)
+    password = models.CharField(max_length=100)
+    confirm_password = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20,blank= True)
+    address = models.CharField(max_length=100)
+    company_location = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.company_name
+        return f"{self.employer_id}, {self.company_name}, {self.full_name}, {self.email}, {self.password}, {self.confirm_password}, {self.phone}, {self.address}, {self.company_location}"
+    def clean(self):
+        if Employee.objects.exclude(pk=self.pk).filter(email=self.email).exists():
+            raise forms.ValidationError("Email already exists in Employee records.")
+        if self.password != self.confirm_password:
+            raise forms.ValidationError("Passwords do not match.")
 
-class Techjob(models.Model):
-    title = models.CharField(max_length=100,blank=True)
-    requirements = models.CharField(max_length =100, blank=True)
-    responsibilities = models.CharField(max_length=100,blank=True)
-
-    def __str__(self):
-        return self.title
-
-class NetworkingJob(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField(max_length=10000)
-    requirements = models.TextField(max_length=10000)
-    responsibilities = models.TextField(max_length=10000)
+class Candidate(models.Model):
+    candidate_id = models.AutoField(primary_key=True)
+    full_name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100,unique=True)
+    password = models.CharField(max_length=100)
+    confirm_password = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20,blank=True)
+    address = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    date_posted = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return self.title
+        return f"{self.candidate_id}, {self.full_name}, {self.email}, {self.password}, {self.confirm_password}, {self.phone}, {self.address}, {self.location}"
+
+    def clean(self):
+        if Employee.objects.exclude(pk=self.pk).filter(email=self.email).exists():
+            raise forms.ValidationError("Email already exists in Employee records.")
+        if self.password != self.confirm_password:
+            raise forms.ValidationError("Passwords do not match.")
+
+
+
+
 
 class JobPost(models.Model):
     JOB_CHOICES = [
