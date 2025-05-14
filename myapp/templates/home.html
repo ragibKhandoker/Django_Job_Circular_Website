@@ -566,7 +566,18 @@
                         <p>{{ job.requirements|truncatewords:20 }}</p>
                         <div class="job-card-footer">
                             <span class="job-date">Posted {{ job.created_at|timesince }} ago</span>
-                            <a href="{% url 'apply_form' job.id %}" class="btn btn-primary">Apply Now</a>
+
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'apply_job' job.id %}" class="btn btn-primary">Apply Now</a>
+                            {% else %}
+                            <a href="{% url 'login' %}?next={% url 'apply_job' job.id %}" class="btn btn-warning">Login to Apply</a>
+                            {% endif %}
+
+
+
+
+
+                            {% comment %} <a href="{% url 'apply_form' job.id %}" class="btn btn-primary">Apply Now</a> {% endcomment %}
                         </div>
                     </div>
                 {% endfor %}
@@ -600,7 +611,13 @@
             <div class="footer-column">
                 <h3>For Employers</h3>
                 <ul>
-                    <li><a href="{% url 'post_job' %}">Post a Job</a></li>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'post_job' %}" class="btn btn-success">Post a Job</a>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'post_job' %}" class="btn btn-warning">Login to Post</a>
+                    {% endif %}
+
+                    {% comment %} <li><a href="{% url 'post_job' %}">Post a Job</a></li> {% endcomment %}
 
                     <li><a href="#">Browse Candidates</a></li>
                     <li><a href="#">Pricing Plans</a></li>

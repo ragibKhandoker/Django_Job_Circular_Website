@@ -1,8 +1,11 @@
 import re
 
 from django.contrib import auth, messages
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
@@ -32,7 +35,6 @@ def employee_signup_view(request):
             return redirect('home')
     else:
         form = EmployeeRegistrationForm()
-    # return render(request, 'signup/employee_signup.html',{'form':form})
     return render(request, 'employee_signup.html',{'form':form})
 
 def candidate_signup_view(request):
@@ -40,13 +42,34 @@ def candidate_signup_view(request):
         form = CandidateRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('success_page')
+            return redirect('home')
     else:
         form = CandidateRegistrationForm()
     return render(request, 'candidate_signup.html',{'form':form})
 
+# def register_view(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         email = request.POST.get('email')
 
+#         if User.objects.filter(username=username).exists():
+#             messages.error(request,"Username already exists")
+#             return redirect('register')
+#         user = User.objects.create_user(username=username,password=password,email=email)
+#         user.save()
+#         messages.success(request,"Regsitration successful.You can now log in")
+#         return redirect('login')
+#     return render(request,'register.html')
 
+# def login_view(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(request,data=request.POST)
+#         if form.is_valid():
+#             user = form.get_user()
+#             login(request,user)
+#             return redirect('home')
+#     return render(request,'login.html',{'form':form})
 
 
 def total_jobs_view(request):
@@ -118,6 +141,8 @@ def tech_apply(request,job_id):
     except Techjob.DoesNotExist:
         return HttpResponse("Job not found",status=404)
     return render(request,'apply.html',{'job':job})
+
+@login_required
 def post_job(request):
     if request.method == 'POST':
         form = JobPostForm(request.POST)
@@ -212,6 +237,27 @@ def apply_form(request, job_id):
         'edu_formset': edu_formset
     })
 
+
+# @login_required
+# def apply_job(request, job_id):
+#     if not request.user.is_candidate:
+#         return HttpResponseForbidden("Only candidates can apply.")
+
+#     job = JobPost.objects.get(id=job_id)
+
+#     if request.method == 'POST':
+#         form = JobApplicationForm(request.POST)
+#         if form.is_valid():
+#             application = form.save(commit=False)
+#             application.candidate = request.user
+#             application.job = job
+#             application.save()
+#             return redirect('/job-list/?applied=true')
+#     else:
+#         form = JobApplicationForm()
+
+#     return render(request, 'apply_form.html', {'form': form, 'job': job})
+@login_required
 def apply_job(request,job_id):
     job = JobPost.objects.get(id=job_id)
     if request.method == 'POST':

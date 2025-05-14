@@ -17,6 +17,8 @@ class Employee(models.Model):
 
     def __str__(self):
         return f"{self.employer_id}, {self.company_name}, {self.full_name}, {self.email}, {self.password}, {self.confirm_password}, {self.phone}, {self.address}, {self.company_location}"
+
+
     def clean(self):
         if Employee.objects.exclude(pk=self.pk).filter(email=self.email).exists():
             raise forms.ValidationError("Email already exists in Employee records.")

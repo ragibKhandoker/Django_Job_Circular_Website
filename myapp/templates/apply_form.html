@@ -55,6 +55,15 @@
         <div class="d-grid gap-2 my-4">
             <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
         </div>
+        <div class="alert alert-danger" role="alert">
+                {% for field, errors in form.errors.items %}
+                    <strong>{{ field|capfirst }}:</strong>
+                    {% for error in errors %}
+                        {{ error }}<br>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {% endif %}
     </form>
 </div>
 
@@ -164,6 +173,12 @@
     .d-grid .btn-lg {
         padding: 15px;
         font-size: 1.2rem;
+    }
+    .alert {
+        margin-bottom: 20px; /* Adds space below the alert box */
+    }
+     .error {
+        border: 2px solid red; /* Highlights the field with a red border */
     }
 
     @media (max-width: 767px) {
