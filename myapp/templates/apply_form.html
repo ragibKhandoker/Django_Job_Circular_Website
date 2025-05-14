@@ -53,9 +53,7 @@
         </div>
 
         <div class="d-grid gap-2 my-4">
-            <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
-        </div>
-        <div class="alert alert-danger" role="alert">
+            {% comment %} <button type="submit" class="btn btn-primary btn-lg">Submit Application</button><div class="alert alert-danger" role="alert">
                 {% for field, errors in form.errors.items %}
                     <strong>{{ field|capfirst }}:</strong>
                     {% for error in errors %}
@@ -63,7 +61,9 @@
                     {% endfor %}
                 {% endfor %}
             </div>
-            {% endif %}
+            {% endif %} {% endcomment %}
+        </div>
+        {% comment %}  {% endcomment %}
     </form>
 </div>
 

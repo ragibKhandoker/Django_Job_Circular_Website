@@ -1,9 +1,9 @@
 import re
 
 from django.contrib import auth, messages
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+# from django.contrib.auth import authenticate, login
+# from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -142,7 +142,7 @@ def tech_apply(request,job_id):
         return HttpResponse("Job not found",status=404)
     return render(request,'apply.html',{'job':job})
 
-@login_required
+# @login_required
 def post_job(request):
     if request.method == 'POST':
         form = JobPostForm(request.POST)
@@ -257,7 +257,7 @@ def apply_form(request, job_id):
 #         form = JobApplicationForm()
 
 #     return render(request, 'apply_form.html', {'form': form, 'job': job})
-@login_required
+# @login_required
 def apply_job(request,job_id):
     job = JobPost.objects.get(id=job_id)
     if request.method == 'POST':
