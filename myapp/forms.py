@@ -1,29 +1,37 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.forms import modelformset_factory
 
 from .models import (Applicant, Candidate, EducationalBackground, Employee,
                      JobApplicationForm, JobPost, WorkExperience)
 
+# class CandidateRegistrationForm(UserCreationForm):
+#     full_name = forms.CharField(max_length=100)
+#     email = forms.EmailField(max_length=100)
+#     address = forms.CharField(widget=forms.Textarea,required=False)
+#     location = forms.CharField(max_length=100,required=False)
+#     phone = forms.CharField(max_length=20,required=False)
 
-class EmployeeRegistrationForm(forms.ModelForm):
-    class Meta:
-        model = Employee
-        fields = [
-            'company_name', 'full_name', 'email', 'password',
-            'confirm_password', 'phone', 'address', 'company_location'
-        ]
-        widgets = {
-            'password': forms.PasswordInput(),
-            'confirm_password': forms.PasswordInput(),
-        }
-    def clean(self):
-        cleaned_data = super().clean()
-        email = cleaned_data.get("email")
-        if Employee.objects.filter(email=email).exists():
-            raise forms.ValidationError("Email already exists.")
-        return cleaned_data
+    # class Meta:
+    #     model = User
+    #     fields = ['username', 'email', 'password1', 'password2']
 
+    # def save(self, commit=True):
+    #     user = super().save(commit=False)
 
+    #     if commit:
+    #         user.save()
+
+    #     profile = Profile.objects.create(
+    #         user=user,  # Link the profile to the user
+    #         full_name=self.cleaned_data['full_name'],
+    #         phone=self.cleaned_data['phone'],
+    #         address=self.cleaned_data['address'],
+    #         location=self.cleaned_data['location']
+    #     )
+
+    #     return user
 class CandidateRegistrationForm(forms.ModelForm):
     class Meta:
         model = Candidate
@@ -47,6 +55,52 @@ class CandidateRegistrationForm(forms.ModelForm):
         if Candidate.objects.filter(email=email).exists():
             raise forms.ValidationError("Email already exists.")
         return cleaned_data
+
+
+class EmployeeRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = Employee
+        fields = [
+            'company_name', 'full_name', 'email', 'password',
+            'confirm_password', 'phone', 'address', 'company_location'
+        ]
+        widgets = {
+            'password': forms.PasswordInput(),
+            'confirm_password': forms.PasswordInput(),
+        }
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        if Employee.objects.filter(email=email).exists():
+            raise forms.ValidationError("Email already exists.")
+        return cleaned_data
+
+
+# class CandidateRegistrationForm(forms.ModelForm):
+# class CandidateRegistrationForm(UserCreationForm):
+#     class Meta:
+#         model = User
+#         fields = [
+#             'full_name', 'email', 'password', 'confirm_password',
+#             'phone', 'address', 'location'
+#         ]
+#         # fields = ['username', 'email', 'password1', 'password2']
+#         widgets = {
+#             'password': forms.PasswordInput(),
+#             'confirm_password': forms.PasswordInput(),
+#         }
+#     def save(self, commit=True):
+#         user = super().save(commit=False)
+#         if commit:
+#             user.save()
+#         return user
+
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         email = cleaned_data.get("email")
+#         if Candidate.objects.filter(email=email).exists():
+#             raise forms.ValidationError("Email already exists.")
+#         return cleaned_data
 
 
 
@@ -120,7 +174,7 @@ class EducationalBackgroundForm(forms.ModelForm):
 WorkExperienceFormSet = modelformset_factory(
     WorkExperience,
     form=WorkExperienceForm,
-    extra=0
+    extra=1
 )
 EducationalBackgroundFormSet = modelformset_factory(
     EducationalBackground,

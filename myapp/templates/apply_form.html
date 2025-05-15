@@ -12,26 +12,30 @@
         <div class="form-section">
             <h3>Personal Information</h3>
             {{ form.as_p }}
-
-            {% comment %} {{ form.as_p }} {% endcomment %}
-
-
-
         </div>
 
         <!-- Dual Column Section for Work and Education -->
         <div class="row">
             <!-- Work Experience -->
-            <div class="col-md-6 form-section">
+            <div class="col-md-6 form-section">  {# Fixed incomplete < tag here #}
                 <h3>Work Experience</h3>
-
                 {{ work_formset.management_form }}
                 <div id="work-experience-forms">
                     {% for form in work_formset %}
                         <div class="work-form">
-                            {{ form.as_p }}
+                            {% for field in form.visible_fields %}
+                                <p>
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label><br>
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <small>{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                        <span style="color:red">{{ error }}</span>
+                                    {% endfor %}
+                                </p>
+                            {% endfor %}
                             {{ form.DELETE }}
-
                         </div>
                     {% endfor %}
                 </div>
@@ -44,7 +48,18 @@
                 <div id="education-forms">
                     {% for form in edu_formset %}
                         <div class="edu-form">
-                            {{ form.as_p }}
+                            {% for field in form.visible_fields %}
+                                <p>
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label><br>
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <small>{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                        <span style="color:red">{{ error }}</span>
+                                    {% endfor %}
+                                </p>
+                            {% endfor %}
                             {{ form.DELETE }}
                         </div>
                     {% endfor %}
@@ -53,17 +68,8 @@
         </div>
 
         <div class="d-grid gap-2 my-4">
-            {% comment %} <button type="submit" class="btn btn-primary btn-lg">Submit Application</button><div class="alert alert-danger" role="alert">
-                {% for field, errors in form.errors.items %}
-                    <strong>{{ field|capfirst }}:</strong>
-                    {% for error in errors %}
-                        {{ error }}<br>
-                    {% endfor %}
-                {% endfor %}
-            </div>
-            {% endif %} {% endcomment %}
+            <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
         </div>
-        {% comment %}  {% endcomment %}
     </form>
 </div>
 
@@ -75,10 +81,19 @@
             addBtn.addEventListener("click", function () {
                 const totalForms = document.getElementById(`id_${prefix}-TOTAL_FORMS`);
                 const formCount = parseInt(totalForms.value);
+                // Clone the last form or first if none
                 const emptyForm = container.querySelector(`.${prefix}-form`) || container.firstElementChild.cloneNode(true);
 
-                emptyForm.querySelectorAll('input, select, textarea').forEach(el => el.value = '');
+                // Clear values in inputs/selects/textareas
+                emptyForm.querySelectorAll('input, select, textarea').forEach(el => {
+                    if (el.type === "checkbox" || el.type === "radio") {
+                        el.checked = false;
+                    } else {
+                        el.value = '';
+                    }
+                });
 
+                // Update the form index in attributes (name/id)
                 emptyForm.innerHTML = emptyForm.innerHTML.replaceAll(`-${formCount - 1}-`, `-${formCount}-`);
                 container.appendChild(emptyForm);
                 totalForms.value = formCount + 1;
@@ -147,6 +162,7 @@
         font-size: 0.9rem;
         padding: 6px 12px;
         border-radius: 4px;
+        margin-top: 10px;
     }
 
     .edu-form, .work-form {
@@ -174,10 +190,12 @@
         padding: 15px;
         font-size: 1.2rem;
     }
+
     .alert {
         margin-bottom: 20px; /* Adds space below the alert box */
     }
-     .error {
+
+    .error {
         border: 2px solid red; /* Highlights the field with a red border */
     }
 

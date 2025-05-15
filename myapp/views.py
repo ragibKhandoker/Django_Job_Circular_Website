@@ -1,9 +1,8 @@
 import re
 
 from django.contrib import auth, messages
-# from django.contrib.auth import authenticate, login
-# from django.contrib.auth.decorators import login_required
-# from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -11,21 +10,39 @@ from django.views import View
 
 from .forms import (ApplicantForm, CandidateRegistrationForm,
                     EducationalBackgroundFormSet, EmployeeRegistrationForm,
-                    JobApplicationForm, JobPostForm, WorkExperienceForm,
-                    WorkExperienceFormSet)
-from .models import (EducationalBackground, JobApplicationForm, JobPost,
-                     WorkExperience)
+                    JobPostForm, WorkExperienceForm, WorkExperienceFormSet)
+from .models import (Applicant, Candidate, EducationalBackground,
+                     JobApplicationForm, JobPost, WorkExperience)
 
 email_address=''
 password=''
 confirm_password=''
 # Create your views here.
+@login_required
 def home_view(request):
     latest_jobs = JobPost.objects.order_by('-created_at')[:4]
-    return render(request,'home.html',{'latest_jobs':latest_jobs})
+    user = request.user
+    can_post_job = hasattr(user,'employeeprofile')
+    can_apply_job = hasattr(user,'candidateprofile')
 
+    context = {
+        'latest_jobs': latest_jobs,
+        'can_post_job': can_post_job,
+        'can_apply_job': can_apply_job,
+    }
+    return render(request, 'home.html', context)
 def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request,user)
+            return redirect('home')
+        else:
+            return render(request, 'login.html', {'error': 'Invalid username or password'})
     return render(request, 'login.html')
+
 
 def employee_signup_view(request):
     if request.method == 'POST':
@@ -47,36 +64,11 @@ def candidate_signup_view(request):
         form = CandidateRegistrationForm()
     return render(request, 'candidate_signup.html',{'form':form})
 
-# def register_view(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-#         email = request.POST.get('email')
-
-#         if User.objects.filter(username=username).exists():
-#             messages.error(request,"Username already exists")
-#             return redirect('register')
-#         user = User.objects.create_user(username=username,password=password,email=email)
-#         user.save()
-#         messages.success(request,"Regsitration successful.You can now log in")
-#         return redirect('login')
-#     return render(request,'register.html')
-
-# def login_view(request):
-#     if request.method == 'POST':
-#         form = AuthenticationForm(request,data=request.POST)
-#         if form.is_valid():
-#             user = form.get_user()
-#             login(request,user)
-#             return redirect('home')
-#     return render(request,'login.html',{'form':form})
-
-
 def total_jobs_view(request):
     location = request.GET.get('location','')
     latest = request.GET.get('latest')
     if location:
-        jobs = JobPost.objects.filter(location_icontains=location).order_by('-id')
+        jobs = JobPost.objects.filter(location__icontains=location).order_by('-id')
         if latest:
             jobs = jobs[:10]
     else:
@@ -141,8 +133,6 @@ def tech_apply(request,job_id):
     except Techjob.DoesNotExist:
         return HttpResponse("Job not found",status=404)
     return render(request,'apply.html',{'job':job})
-
-# @login_required
 def post_job(request):
     if request.method == 'POST':
         form = JobPostForm(request.POST)
@@ -153,6 +143,7 @@ def post_job(request):
         form = JobPostForm()
 
     return render(request,'post_job.html',{'form':form})
+
 
 def create_job(request):
     form = JobPostForm()
@@ -167,7 +158,6 @@ def job_list(request):
     return render(request,'job_list.html',context)
 
 def delete_job(request, job_id):
-    # Delete the job and related applications
     JobPost.objects.filter(id=job_id).delete()
     return redirect('job_list')
 
@@ -183,14 +173,11 @@ def apply_view(request,job_id):
     else:
         form = JobApplicationForm()
     return render(request,'apply.html',{'jobs':job,'form':form})
-
-
-
 def apply_job_view(request,job_id):
     job = get_object_or_404(JobPost,id = job_id)
     return render(request,'apply_success.html',{'job':job})
 
-
+@login_required
 def apply_form(request, job_id):
     job = get_object_or_404(JobPost, id=job_id)
 
@@ -203,8 +190,8 @@ def apply_form(request, job_id):
             applicant = applicant_form.save(commit=False)
             applicant.job = job
             applicant.save()
-            applicant.work_experiences.all()
-            applicant.educational_backgrounds.all()
+            # applicant.work_experiences.all()
+            # applicant.educational_backgrounds.all()
 
             for work_exp in work_formset.save(commit=False):
                 work_exp.applicant = applicant
@@ -218,7 +205,6 @@ def apply_form(request, job_id):
     'work_experiences': applicant.work_experiences.all(),
     'educational_backgrounds': applicant.educational_backgrounds.all()
 })
-
 
 
         else:
@@ -238,37 +224,21 @@ def apply_form(request, job_id):
     })
 
 
-# @login_required
-# def apply_job(request, job_id):
-#     if not request.user.is_candidate:
-#         return HttpResponseForbidden("Only candidates can apply.")
-
-#     job = JobPost.objects.get(id=job_id)
-
-#     if request.method == 'POST':
-#         form = JobApplicationForm(request.POST)
-#         if form.is_valid():
-#             application = form.save(commit=False)
-#             application.candidate = request.user
-#             application.job = job
-#             application.save()
-#             return redirect('/job-list/?applied=true')
-#     else:
-#         form = JobApplicationForm()
-
-#     return render(request, 'apply_form.html', {'form': form, 'job': job})
-# @login_required
+@login_required
 def apply_job(request,job_id):
+    if not hasattr(request.user, 'candidate'):
+        return redirect('candidate_signup')
     job = JobPost.objects.get(id=job_id)
     if request.method == 'POST':
-        form = ApplicationForm(request.POST,request.FILES)
+        form = JobApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             applicant = form.save(commit=False)
             applicant.job = job
+            applicant.candidate = request.user.candidate
             applicant.save()
             return redirect('success_page')
     else:
-        form = ApplicationForm()
+        form = JobApplicationForm()
     return render(request,'apply_form.html',{'application_form':form,'job':job})
 def save_personal_info(request):
     if request.method == 'POST':
@@ -283,6 +253,7 @@ def save_personal_info(request):
             portfolio_website = request.POST.get('portfolio_website')
         )
         applicant.save()
+
         return redirect('application_success')
     return render(request,'apply_form.html')
 def application_view(request):
@@ -300,49 +271,3 @@ def application_success(request):
 
 def apply_success(request):
     return render(request, 'apply_success.html')
-
-
-
-# def employer_signup(request):
-#     if request.method == 'POST':
-#         form = EmployerSignupForm(request.POST)
-#         if form.is_valid():
-#             user = User.objects.create_user(
-#                 username = form.cleaned_data['email'],
-#                 email = form.cleaned_data['email'],
-#                 password = form.cleaned_data['password']
-#             )
-#             employer = form.save(commit=False)
-#             employer.password = user.password
-#             employer.save()
-#             login(request,user)
-#             return redirect('post_job')
-#     else:
-#         form = EmployerSignupForm()
-#     return render(request,'employer_registration.html',{'form':form})
-
-# def employee_signup_view(request):
-#     if request.method == 'POST':
-#         form = EmployerRegistrationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('login')
-#     else:
-#         form = EmployerRegistrationForm()
-#     return render(request,'employer_registration.html',{'form':form})
-
-# def signup_view(request):
-#     if request.method == 'POST':
-#         form = SignupForm(request.POST)
-#         print(form.is_valid())
-#         print(form.errors)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request,"Account created successfully!")
-#             return redirect('login')
-#         else:
-#             messages.error(request,"Please fix the errors first")
-#     else:
-#         form = SignupForm()
-
-#     return render(request,'signup.html',{'form':form})

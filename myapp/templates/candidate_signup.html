@@ -17,8 +17,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background: linear-gradient(135deg, #6dd5ed, #2193b0);
             padding: 10px;
-            background: linear-gradient(135deg, #6dd5ed, #2193b0); /* blue-green gradient */
         }
 
         .fade-in-container {
@@ -36,17 +36,19 @@
             max-width: 700px;
             width: 100%;
             background-color: #fff;
-            padding: 25px 30px;
-            border-radius: 5px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
         .container .title {
-            font-size: 25px;
-            font-weight: 500;
+            font-size: 28px;
+            font-weight: 600;
             position: relative;
             text-align: center;
             margin-bottom: 20px;
+            color: #333;
         }
 
         .container .title::before {
@@ -54,9 +56,9 @@
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            bottom: 0;
+            bottom: -10px;
             height: 3px;
-            width: 30px;
+            width: 40px;
             border-radius: 5px;
             background: linear-gradient(135deg, #6dd5ed, #2193b0);
         }
@@ -81,7 +83,8 @@
         form p label {
             display: block;
             font-weight: 500;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: #555;
         }
 
         form p input {
@@ -89,16 +92,18 @@
             width: 100%;
             outline: none;
             font-size: 16px;
-            border-radius: 5px;
+            border-radius: 8px;
             padding-left: 15px;
             border: 1px solid #ccc;
             border-bottom-width: 2px;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         form p input:focus,
         form p input:valid {
             border-color: #2193b0;
+            box-shadow: 0 4px 6px rgba(33, 147, 176, 0.3);
         }
 
         form .button {
@@ -109,7 +114,7 @@
         form .button button {
             height: 100%;
             width: 100%;
-            border-radius: 5px;
+            border-radius: 8px;
             border: none;
             color: #fff;
             font-size: 18px;
@@ -118,10 +123,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: linear-gradient(135deg, #6dd5ed, #2193b0);
+            box-shadow: 0 6px 10px rgba(33, 147, 176, 0.15);
         }
 
         form .button button:hover {
             background: linear-gradient(-135deg, #6dd5ed, #2193b0);
+            box-shadow: 0 8px 15px rgba(33, 147, 176, 0.2);
         }
 
         .errorlist {
@@ -133,29 +140,29 @@
 
         @media(max-width: 584px) {
             .container {
+                padding: 25px 20px;
                 max-width: 100%;
             }
 
             form p {
-                margin-bottom: 15px;
                 width: 100%;
+                margin-bottom: 15px;
             }
         }
 
         @media(max-width: 459px) {
             .container {
-                padding: 25px 20px;
+                padding: 25px 15px;
             }
         }
 
-        /* Added styles for Django messages */
         .django-messages {
             margin-bottom: 20px;
         }
 
         .message {
             padding: 12px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 14px;
             margin-bottom: 10px;
         }
@@ -171,15 +178,19 @@
             color: #155724;
             border-left: 5px solid #c3e6cb;
         }
+
+        a:hover {
+            text-decoration: underline;
+            color: #176c8e;
+        }
+
     </style>
 </head>
 <body>
-    <!-- Fade-in container -->
     <div class="fade-in-container" id="formContainer">
         <div class="container">
             <div class="title">Register as a Candidate</div>
 
-            <!-- Added Django messages block -->
             {% if messages %}
                 <div class="django-messages">
                     {% for message in messages %}
@@ -197,15 +208,24 @@
                     <button type="submit">Sign Up</button>
                 </div>
             </form>
+
+            <!-- Login redirect link -->
+            <div style="text-align: center; margin-top: 10px;">
+                <p style="font-size: 15px;">
+                    Already have an account?
+                    <a href="{% url 'login' %}" style="color: #2193b0; font-weight: 500; text-decoration: none;">
+                        Login here
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
 
-    <!-- JavaScript to trigger fade-in -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 document.getElementById('formContainer').classList.add('show');
-            }, 600);  // delay in milliseconds (e.g., 600ms = 0.6s)
+            }, 600);
         });
     </script>
 </body>

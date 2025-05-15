@@ -9,7 +9,11 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+from django.contrib.messages import constants as messages
 
+MESSAGES_TAGS = {
+    messages.ERROR: 'danger',
+    }
 import os
 from pathlib import Path
 
@@ -132,3 +136,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AUTH_USER_MODEL = 'myapp.CustomerUser'
+
+LOGIN_REDIRECT_URL = 'home'

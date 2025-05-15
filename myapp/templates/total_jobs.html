@@ -98,7 +98,9 @@
                     <p><strong>Company:</strong> {{ job.company }}</p>
                     <p><strong>Location:</strong> {{ job.location }}</p>
                     <p><strong>Description:</strong> {{ job.description }}</p>
-                    <a href="{% url 'apply_job' job.id %}" class="btn btn-success apply-btn">Apply Now</a>
+                    <a href="{% url 'apply_form' job.id %}" class="btn btn-success apply-btn">Apply Now</a>
+
+                    {% comment %} <a href="{% url 'apply_job' job.id %}" class="btn btn-success apply-btn">Apply Now</a> {% endcomment %}
                 </div>
             {% endfor %}
         </div>

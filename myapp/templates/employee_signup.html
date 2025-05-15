@@ -18,7 +18,7 @@
             justify-content: center;
             align-items: center;
             padding: 10px;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #71b7e6, #9b59b6); /* Purple-blue gradient */
         }
 
         .fade-in-container {
@@ -147,13 +147,32 @@
                 padding: 25px 20px;
             }
         }
+
+        /* Link styles for "Already have an account?" */
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #9b59b6;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <!-- Fade-in effect wrapper -->
+    <!-- Fade-in container -->
     <div class="fade-in-container" id="formContainer">
         <div class="container">
             <div class="title">Register as an Employee</div>
+
+            <!-- Form for employee signup -->
             <form method="POST">
                 {% csrf_token %}
                 <div class="user-details">
@@ -163,15 +182,20 @@
                     <button type="submit">Sign Up</button>
                 </div>
             </form>
+
+            <!-- Login link for already existing users -->
+            <div class="login-link">
+                <p>Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+            </div>
         </div>
     </div>
 
-    <!-- JavaScript to trigger fade-in on page load -->
+    <!-- JavaScript for fade-in effect -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 document.getElementById('formContainer').classList.add('show');
-            }, 600); // 0.6 seconds delay
+            }, 600);  // delay in milliseconds (e.g., 600ms = 0.6s)
         });
     </script>
 </body>

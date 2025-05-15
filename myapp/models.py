@@ -26,6 +26,7 @@ class Employee(models.Model):
             raise forms.ValidationError("Passwords do not match.")
 
 class Candidate(models.Model):
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE, null=True, blank=True)
     candidate_id = models.AutoField(primary_key=True)
     full_name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100,unique=True)

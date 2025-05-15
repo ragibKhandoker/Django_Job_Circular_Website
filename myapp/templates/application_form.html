@@ -65,6 +65,7 @@
             margin-bottom: 15px;
             background: #fafafa;
             border-radius: 6px;
+            position: relative;
         }
 
         .add-button {
@@ -76,6 +77,7 @@
             text-decoration: none;
             cursor: pointer;
             margin-top: 10px;
+            border: none;
         }
 
         button[type="submit"] {
@@ -91,22 +93,19 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
+
         /* Add to your style section */
-.delete-checkbox {
-    margin-left: 10px;
-}
+        .delete-checkbox {
+            margin-left: 10px;
+        }
 
-.formset-block {
-    position: relative;
-}
-
-.formset-block .delete-row {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    color: red;
-    cursor: pointer;
-}
+        .formset-block .delete-row {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: red;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -116,18 +115,18 @@
         {% csrf_token %}
 
         <!-- Applicant Form -->
-        {% csrf_token %}
-    {{ form.as_p }}
+        {{ form.as_p }}
 
         <!-- Work Experience FormSet -->
         <fieldset>
             <legend>Work Experience</legend>
             {{ work_formset.management_form }}
             {% for form in work_formset %}
-                <div class="formset-block">
+                <div class="formset-block" id="work-{{ forloop.counter0 }}">
                     {{ form.as_p }}
                 </div>
             {% endfor %}
+            <button type="button" class="add-work-experience add-button">Add Work Experience</button>
         </fieldset>
 
         <!-- Educational Background FormSet -->
@@ -135,24 +134,38 @@
             <legend>Educational Background</legend>
             {{ edu_formset.management_form }}
             {% for form in edu_formset %}
-                <div class="formset-block">
+                <div class="formset-block" id="edu-{{ forloop.counter0 }}">
                     {{ form.as_p }}
                 </div>
             {% endfor %}
+            <button type="button" class="add-education add-button">Add Education</button>
         </fieldset>
 
         <button type="submit">Submit Application</button>
-        <!-- After your form closing tag (before </body>) -->
+    </form>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Helper to get fieldset by legend text
+    function getFieldsetByLegendText(text) {
+        const fieldsets = document.querySelectorAll('fieldset');
+        for (const fs of fieldsets) {
+            const legend = fs.querySelector('legend');
+            if (legend && legend.textContent.trim() === text) {
+                return fs;
+            }
+        }
+        return null;
+    }
+
     // Add more button for work experience
     document.querySelector('.add-work-experience').addEventListener('click', function() {
-        cloneMore('div.formset-block:first', 'work');
+        cloneMore('div.formset-block:first-of-type', 'work');
     });
 
     // Add more button for education
     document.querySelector('.add-education').addEventListener('click', function() {
-        cloneMore('div.formset-block:first', 'edu');
+        cloneMore('div.formset-block:first-of-type', 'edu');
     });
 
     function cloneMore(selector, prefix) {
@@ -161,20 +174,33 @@ document.addEventListener('DOMContentLoaded', function() {
         const formNum = currentForms.length;
         const newForm = document.querySelector(selector).cloneNode(true);
 
+        // Clear input values in newForm (optional but recommended)
+        const inputs = newForm.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                input.checked = false;
+            } else {
+                input.value = '';
+            }
+        });
+
         // Update all names/ids
         newForm.innerHTML = newForm.innerHTML.replace(
             new RegExp(`${prefix}-(\\d+)-`, 'g'),
             `${prefix}-${formNum}-`
         );
 
+        // Update id attribute to unique
+        newForm.id = `${prefix}-${formNum}`;
+
         // Insert before the add button
-        document.querySelector(`fieldset legend:contains("${prefix === 'work' ? 'Work Experience' : 'Educational Background'}")`)
-            .parentNode.insertBefore(newForm, document.querySelector(`.add-${prefix}`));
+        const fieldset = getFieldsetByLegendText(prefix === 'work' ? 'Work Experience' : 'Educational Background');
+        const addButton = fieldset.querySelector(`.add-${prefix}`);
+        fieldset.insertBefore(newForm, addButton);
 
         totalForms.value = formNum + 1;
     }
 });
 </script>
-    </form>
 </body>
 </html>
