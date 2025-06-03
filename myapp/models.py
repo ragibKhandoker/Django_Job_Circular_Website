@@ -81,13 +81,6 @@ class JobPost(models.Model):
         ("contractual", "Contractual"),
     ]
 
-    HOURS_CHOICES = [
-        (1, '1-10 hours'),
-        (2, '11-20 hours'),
-        (3, '21-30 hours'),
-        (4, '31-40 hours'),
-        (5, '40+ hours'),
-    ]
 
     EDUCATION_CHOICES = [
         ('high_school', 'High School'),
@@ -103,12 +96,12 @@ class JobPost(models.Model):
     ]
 
     job_id = models.IntegerField(default=0)
+    company_name = models.CharField(max_length=100)
     title = models.CharField(max_length=200, choices=JOB_CHOICES)
     location = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     salary = models.CharField(max_length=100, choices=SALARY_CHOICES)
     status = models.CharField(choices=STATUS_CHOICES, max_length=100)
-    work_hours = models.IntegerField(choices=HOURS_CHOICES)
     requirements = models.TextField(max_length=400)
     educational_level = models.CharField(max_length=50, choices=EDUCATION_CHOICES)
     experience_level = models.CharField(max_length=20, choices=EXPERIENCE_CHOICES)

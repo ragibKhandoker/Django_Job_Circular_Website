@@ -80,7 +80,41 @@
     </p>
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% comment %} {{ form.as_p }} {% endcomment %}
+        <p>
+    {{ form.job_id.label_tag }} {{ form.job_id }}
+</p>
+<p>
+    {{ form.title.label_tag }} {{ form.title }}
+</p>
+<p>
+    {{form.company_name.label_tag}}{{form.company_name}}
+</p>
+<p>
+    {{ form.status.label_tag }} {{ form.status }}
+</p>
+<p>
+    {{ form.requirements.label_tag }} {{ form.requirements }}
+</p>
+<p>
+    {{ form.location.label_tag }} {{ form.location }}
+</p>
+<p>
+    {{ form.salary.label_tag }} {{ form.salary }}
+</p>
+<p>
+    {{ form.educational_level.label_tag }} {{ form.educational_level }}
+</p>
+<p>
+    {{ form.experience_level.label_tag }} {{ form.experience_level }}
+</p>
+<p>
+    {{ form.deadline.label_tag }} {{ form.deadline }}
+</p>
+{% comment %} <p>
+    {{ form.work_hours.label_tag }} {{ form.work_hours}}
+</p> {% endcomment %}
+
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-paper-plane"></i> Post Job
         </button>
