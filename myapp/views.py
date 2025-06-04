@@ -216,23 +216,14 @@ def apply_form(request, job_id):
     })
 
 
+def browse_candidates(request):
+    candidates = Applicant.objects.all()
+    return render(request,'browse_candidates.html',{'candidates':candidates})
 
+def candidate_detail(request,applicant_id):
+    applicant = get_object_or_404(Applicant,id=applicant_id)
+    return render(request,'candidate_detail.html',{'applicant':applicant})
 
-# def apply_job(request,job_id):
-#     if not hasattr(request.user, 'candidate'):
-#         return redirect('candidate_signup')
-#     job = JobPost.objects.get(id=job_id)
-#     if request.method == 'POST':
-#         form = JobApplicationForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             applicant = form.save(commit=False)
-#             applicant.job = job
-#             applicant.candidate = request.user.candidate
-#             applicant.save()
-#             return redirect('success_page')
-#     else:
-#         form = JobApplicationForm()
-#     return render(request,'apply_form.html',{'application_form':form,'job':job})
 def save_personal_info(request):
     if request.method == 'POST':
         applicant = Applicant(

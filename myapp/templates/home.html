@@ -567,12 +567,6 @@
                         <div class="job-card-footer">
                             <span class="job-date">Posted {{ job.created_at|timesince }} ago</span>
 
-                            {% comment %} {% if user.is_authenticated %}
-                            <a href="{% url 'apply_job' job.id %}" class="btn btn-primary">Apply Now</a>
-                            {% else %}
-                            <a href="{% url 'login' %}?next={% url 'apply_job' job.id %}" class="btn btn-warning">Login to Apply</a>
-                            {% endif %} {% endcomment %}
-
 
 
 
@@ -611,15 +605,9 @@
             <div class="footer-column">
                 <h3>For Employers</h3>
                 <ul>
-                    {% comment %} {% if user.is_authenticated %}
-                    <a href="{% url 'post_job' %}" class="btn btn-success">Post a Job</a>
-                    {% else %}
-                        <a href="{% url 'login' %}?next={% url 'post_job' %}" class="btn btn-warning">Login to Post</a>
-                    {% endif %} {% endcomment %}
-
                     <li><a href="{% url 'post_job' %}">Post a Job</a></li>
 
-                    <li><a href="#">Browse Candidates</a></li>
+                    <li><a href="{% url 'browse_candidates' %}">Browse Candidates</a></li>
                     <li><a href="#">Pricing Plans</a></li>
                     <li><a href="#">HR Solutions</a></li>
                 </ul>
