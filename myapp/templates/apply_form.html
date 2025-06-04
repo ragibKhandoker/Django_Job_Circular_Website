@@ -23,6 +23,7 @@
                 <div id="work-experience-forms">
                     {% for form in work_formset %}
                         <div class="work-form">
+                            {{ form.id }}
                             {% for field in form.visible_fields %}
                                 <p>
                                     <label for="{{ field.id_for_label }}">{{ field.label }}</label><br>
@@ -48,6 +49,7 @@
                 <div id="education-forms">
                     {% for form in edu_formset %}
                         <div class="edu-form">
+                            {{ form.id }}
                             {% for field in form.visible_fields %}
                                 <p>
                                     <label for="{{ field.id_for_label }}">{{ field.label }}</label><br>

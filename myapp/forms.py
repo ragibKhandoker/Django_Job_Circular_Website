@@ -123,7 +123,7 @@ class EducationalBackgroundForm(forms.ModelForm):
 WorkExperienceFormSet = modelformset_factory(
     WorkExperience,
     form=WorkExperienceForm,
-    extra=1
+    extra=0
 )
 EducationalBackgroundFormSet = modelformset_factory(
     EducationalBackground,

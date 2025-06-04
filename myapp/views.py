@@ -164,23 +164,13 @@ def delete_job(request, job_id):
     JobPost.objects.filter(id=job_id).delete()
     return redirect('job_list')
 
-def apply_view(request,job_id):
-    job = get_object_or_404(JobPost,id=job_id)
-    if request.method == 'POST':
-        form = JobApplicationForm(request.POST,request.FILES)
-        if form.is_valid():
-            application = form.save(commit=False)
-            application.job = job
-            application.save()
-            return redirect('apply_success')
-    else:
-        form = JobApplicationForm()
-    return render(request,'apply.html',{'jobs':job,'form':form})
+
 def apply_job_view(request,job_id):
     job = get_object_or_404(JobPost,id = job_id)
     return render(request,'apply_success.html',{'job':job})
 
-@login_required
+
+
 def apply_form(request, job_id):
     job = get_object_or_404(JobPost, id=job_id)
 
@@ -201,12 +191,12 @@ def apply_form(request, job_id):
             for edu in edu_formset.save(commit=False):
                 edu.applicant = applicant
                 edu.save()
-            return render(request, 'application_submitted.html', {
-    'applicant': applicant,
-    'work_experiences': applicant.work_experiences.all(),
-    'educational_backgrounds': applicant.educational_backgrounds.all()
-})
 
+            return render(request, 'application_submitted.html', {
+                'applicant': applicant,
+                'work_experiences': applicant.work_experiences.all(),
+                'educational_backgrounds': applicant.educational_backgrounds.all()
+            })
 
         else:
             print(applicant_form.errors)
@@ -217,6 +207,7 @@ def apply_form(request, job_id):
         applicant_form = ApplicantForm()
         work_formset = WorkExperienceFormSet(prefix='work')
         edu_formset = EducationalBackgroundFormSet(prefix='edu')
+
     return render(request, 'apply_form.html', {
         'job': job,
         'form': applicant_form,
@@ -225,22 +216,23 @@ def apply_form(request, job_id):
     })
 
 
-@login_required
-def apply_job(request,job_id):
-    if not hasattr(request.user, 'candidate'):
-        return redirect('candidate_signup')
-    job = JobPost.objects.get(id=job_id)
-    if request.method == 'POST':
-        form = JobApplicationForm(request.POST, request.FILES)
-        if form.is_valid():
-            applicant = form.save(commit=False)
-            applicant.job = job
-            applicant.candidate = request.user.candidate
-            applicant.save()
-            return redirect('success_page')
-    else:
-        form = JobApplicationForm()
-    return render(request,'apply_form.html',{'application_form':form,'job':job})
+
+
+# def apply_job(request,job_id):
+#     if not hasattr(request.user, 'candidate'):
+#         return redirect('candidate_signup')
+#     job = JobPost.objects.get(id=job_id)
+#     if request.method == 'POST':
+#         form = JobApplicationForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             applicant = form.save(commit=False)
+#             applicant.job = job
+#             applicant.candidate = request.user.candidate
+#             applicant.save()
+#             return redirect('success_page')
+#     else:
+#         form = JobApplicationForm()
+#     return render(request,'apply_form.html',{'application_form':form,'job':job})
 def save_personal_info(request):
     if request.method == 'POST':
         applicant = Applicant(

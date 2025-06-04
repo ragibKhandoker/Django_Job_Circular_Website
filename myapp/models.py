@@ -148,7 +148,7 @@ class Applicant(models.Model):
         return f"{self.full_name}, {self.email}, {self.phone}, {self.address}, {self.cover_letter}, {self.resume}, {self.linkedin_profile}, {self.portfolio_website}"
 
 class WorkExperience(models.Model):
-    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='work_experiences')
+    applicant = models.ForeignKey('Applicant',on_delete=models.CASCADE,related_name='work_experiences')
     company_name = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
     responsibilities = models.TextField(blank=True)
@@ -176,7 +176,7 @@ class EducationalBackground(models.Model):
         ('OT', 'Other'),
     ]
     degree_type = models.CharField(max_length=100, choices=DEGREE_TYPES)
-    applicant = models.ForeignKey(Applicant,on_delete=models.CASCADE,related_name='educational_backgrounds')
+    applicant = models.ForeignKey('Applicant',on_delete=models.CASCADE,related_name='educational_backgrounds')
     institution_name = models.CharField(max_length=150)
     start_year = models.PositiveIntegerField(null=True,blank=True)
     end_year = models.PositiveIntegerField(null=True,blank=True)
