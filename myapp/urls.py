@@ -12,14 +12,10 @@ urlpatterns = [
     path('', views.home_view, name='home'),
     path('login/', views.login_view, name='login'),
     path('signup/', views.choose_role_view, name='signup'),
-   #  path('register/', views.login_view,name='register'),
     path('signup/employee/', views.employee_signup_view, name='employee_signup'),
-
     path('signup/employee/', employee_signup_view, name='employee_signup'),
     path('signup/candidate/', candidate_signup_view, name='candidate_signup'),
     path('apply/<int:job_id>/', views.apply_form, name='apply_form'),
-    # path('apply/<int:job_id>/', views.apply_job_view, name='apply_job'),
-
     path('jobs/category/<str:category>/', views.job_category_view, name='job_category'),
     path('delete_job/<int:job_id>/', views.delete_job, name='delete_job'),
     path('post-job/', views.post_job, name='post_job'),
@@ -27,10 +23,4 @@ urlpatterns = [
     path('jobs/total/', views.total_jobs_view, name='TotalJob'),
     path('application-success/', views.application_success, name='application_success'),
     path('apply-success/', views.apply_success, name='apply_success'),
-    #  path('candidate/signup/', views.candidate_signup, name='candidate_signup'),
-
-   # path('apply/success/', views.apply_success, name='apply_success'),
-
-
-
 ]

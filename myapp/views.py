@@ -4,6 +4,7 @@ from django.contrib import auth, messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
@@ -66,14 +67,16 @@ def candidate_signup_view(request):
 
 def total_jobs_view(request):
     location = request.GET.get('location','')
-    latest = request.GET.get('latest')
+    latest = request.GET.get('latest','')
+    jobs = JobPost.objects.all()
     if location:
-        jobs = JobPost.objects.filter(location__icontains=location).order_by('-id')
-        if latest:
-            jobs = jobs[:10]
-    else:
-        jobs = JobPost.objects.all().order_by('-id')
-    return render(request,'total_jobs.html',{'jobs':jobs})
+        jobs = jobs.filter(location__icontains=location)
+    if latest == '1':
+        jobs = jobs.order_by('-created_at')[:10]
+    return render(request,'total_jobs.html',{
+        'jobs':jobs,
+        'location':location,
+    })
 
 def choose_role_view(request):
     return render(request,'registration_choose.html')
@@ -190,8 +193,6 @@ def apply_form(request, job_id):
             applicant = applicant_form.save(commit=False)
             applicant.job = job
             applicant.save()
-            # applicant.work_experiences.all()
-            # applicant.educational_backgrounds.all()
 
             for work_exp in work_formset.save(commit=False):
                 work_exp.applicant = applicant
