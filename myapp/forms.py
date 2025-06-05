@@ -6,49 +6,48 @@ from django.forms import modelformset_factory
 from .models import (Applicant, Candidate, EducationalBackground, Employee,
                      JobApplicationForm, JobPost, WorkExperience)
 
+# class CandidateRegistrationForm(forms.ModelForm):
+#     class Meta:
+#         model = Candidate
+#         fields = [
+#             'full_name', 'email', 'password', 'confirm_password',
+#             'phone', 'address', 'location'
+#         ]
+#         widgets = {
+#             'password': forms.PasswordInput(),
+#             'confirm_password': forms.PasswordInput(),
+#         }
+#     def save(self, commit=True):
+#         user = super().save(commit=False)
+#         if commit:
+#             user.save()
+#         return user
 
-class CandidateRegistrationForm(forms.ModelForm):
-    class Meta:
-        model = Candidate
-        fields = [
-            'full_name', 'email', 'password', 'confirm_password',
-            'phone', 'address', 'location'
-        ]
-        widgets = {
-            'password': forms.PasswordInput(),
-            'confirm_password': forms.PasswordInput(),
-        }
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        if commit:
-            user.save()
-        return user
-
-    def clean(self):
-        cleaned_data = super().clean()
-        email = cleaned_data.get("email")
-        if Candidate.objects.filter(email=email).exists():
-            raise forms.ValidationError("Email already exists.")
-        return cleaned_data
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         email = cleaned_data.get("email")
+#         if Candidate.objects.filter(email=email).exists():
+#             raise forms.ValidationError("Email already exists.")
+#         return cleaned_data
 
 
-class EmployeeRegistrationForm(forms.ModelForm):
-    class Meta:
-        model = Employee
-        fields = [
-            'company_name', 'full_name', 'email', 'password',
-            'confirm_password', 'phone', 'address', 'company_location'
-        ]
-        widgets = {
-            'password': forms.PasswordInput(),
-            'confirm_password': forms.PasswordInput(),
-        }
-    def clean(self):
-        cleaned_data = super().clean()
-        email = cleaned_data.get("email")
-        if Employee.objects.filter(email=email).exists():
-            raise forms.ValidationError("Email already exists.")
-        return cleaned_data
+# class EmployeeRegistrationForm(forms.ModelForm):
+#     class Meta:
+#         model = Employee
+#         fields = [
+#             'company_name', 'full_name', 'email', 'password',
+#             'confirm_password', 'phone', 'address', 'company_location'
+#         ]
+#         widgets = {
+#             'password': forms.PasswordInput(),
+#             'confirm_password': forms.PasswordInput(),
+#         }
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         email = cleaned_data.get("email")
+#         if Employee.objects.filter(email=email).exists():
+#             raise forms.ValidationError("Email already exists.")
+#         return cleaned_data
 
 
 

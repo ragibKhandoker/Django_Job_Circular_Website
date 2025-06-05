@@ -24,5 +24,6 @@ urlpatterns = [
     path('application-success/', views.application_success, name='application_success'),
     path('apply-success/', views.apply_success, name='apply_success'),
     path('browse-candidates/',views.browse_candidates,name='browse_candidates'),
-    path('candidate/<int:applicant_id>/',views.candidate_detail,name="candidate_detail")
+    path('candidate/<int:applicant_id>/',views.candidate_detail,name="candidate_detail"),
+    path('logout/',auth_views.LogoutView.as_view(next_page='login'),name='logout'),
 ]

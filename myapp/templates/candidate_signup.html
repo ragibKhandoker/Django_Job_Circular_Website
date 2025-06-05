@@ -1,232 +1,234 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candidate Signup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --white: #ffffff;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --error: #f72585;
+        }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #6dd5ed, #2193b0);
-            padding: 10px;
+            padding: 20px;
         }
 
-        .fade-in-container {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 1s ease, transform 1s ease;
-        }
-
-        .fade-in-container.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .container {
-            max-width: 700px;
+        .signup-container {
             width: 100%;
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .container .title {
-            font-size: 28px;
-            font-weight: 600;
-            position: relative;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .signup-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 20px;
             text-align: center;
-            margin-bottom: 20px;
-            color: #333;
         }
 
-        .container .title::before {
-            content: "";
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            bottom: -10px;
-            height: 3px;
-            width: 40px;
-            border-radius: 5px;
-            background: linear-gradient(135deg, #6dd5ed, #2193b0);
+        .signup-header h2 {
+            font-weight: 600;
+            font-size: 22px;
+            margin-bottom: 5px;
         }
 
-        form {
-            margin-top: 20px;
+        .signup-header p {
+            font-weight: 300;
+            opacity: 0.9;
+            font-size: 14px;
         }
 
-        form .user-details {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin: 20px 0 12px 0;
+        .signup-form {
+            padding: 20px;
         }
 
-        form p {
+        .form-group {
             margin-bottom: 15px;
-            width: calc(100% / 2 - 20px);
             position: relative;
         }
 
-        form p label {
+        .form-group label {
             display: block;
+            margin-bottom: 6px;
             font-weight: 500;
-            margin-bottom: 8px;
-            color: #555;
+            color: var(--dark);
+            font-size: 13px;
         }
 
-        form p input {
-            height: 45px;
+        .form-group input {
             width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.3s;
+            background-color: var(--light);
+        }
+
+        .form-group input:focus {
             outline: none;
-            font-size: 16px;
-            border-radius: 8px;
-            padding-left: 15px;
-            border: 1px solid #ccc;
-            border-bottom-width: 2px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            background-color: var(--white);
         }
 
-        form p input:focus,
-        form p input:valid {
-            border-color: #2193b0;
-            box-shadow: 0 4px 6px rgba(33, 147, 176, 0.3);
+        .form-group input::placeholder {
+            color: var(--gray);
+            opacity: 0.6;
+            font-size: 13px;
         }
 
-        form .button {
-            height: 45px;
-            margin: 35px 0;
-        }
-
-        form .button button {
-            height: 100%;
+        .btn {
             width: 100%;
-            border-radius: 8px;
+            padding: 12px;
             border: none;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 500;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: linear-gradient(135deg, #6dd5ed, #2193b0);
-            box-shadow: 0 6px 10px rgba(33, 147, 176, 0.15);
-        }
-
-        form .button button:hover {
-            background: linear-gradient(-135deg, #6dd5ed, #2193b0);
-            box-shadow: 0 8px 15px rgba(33, 147, 176, 0.2);
-        }
-
-        .errorlist {
-            color: #e74c3c;
+            border-radius: 6px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
             font-size: 14px;
-            margin-top: 5px;
-            list-style: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
         }
 
-        @media(max-width: 584px) {
-            .container {
-                padding: 25px 20px;
-                max-width: 100%;
-            }
-
-            form p {
-                width: 100%;
-                margin-bottom: 15px;
-            }
+        .btn:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
         }
 
-        @media(max-width: 459px) {
-            .container {
-                padding: 25px 15px;
-            }
+        .error-message {
+            color: var(--error);
+            background-color: rgba(247, 37, 133, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            text-align: center;
+            border-left: 3px solid var(--error);
+            animation: shake 0.5s;
         }
 
-        .django-messages {
-            margin-bottom: 20px;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .messages {
+            margin-bottom: 15px;
         }
 
         .message {
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 10px;
+            border-radius: 6px;
             margin-bottom: 10px;
-        }
-
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-left: 5px solid #f5c6cb;
+            font-size: 13px;
+            text-align: center;
         }
 
         .message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border-left: 5px solid #c3e6cb;
+            background-color: rgba(76, 201, 240, 0.1);
+            color: #4cc9f0;
+            border-left: 3px solid #4cc9f0;
         }
 
-        a:hover {
-            text-decoration: underline;
-            color: #176c8e;
+        .message.error {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: var(--error);
+            border-left: 3px solid var(--error);
         }
-
     </style>
 </head>
 <body>
-    <div class="fade-in-container" id="formContainer">
-        <div class="container">
-            <div class="title">Register as a Candidate</div>
+    <div class="signup-container">
+        <div class="signup-header">
+            <h2>Join Our Platform</h2>
+            <p>Create your candidate account</p>
+        </div>
 
+        <div class="signup-form">
             {% if messages %}
-                <div class="django-messages">
-                    {% for message in messages %}
-                        <div class="message {{ message.tags }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+                {% endfor %}
+            </div>
             {% endif %}
 
-            <form method="POST">
+            <form method="post">
                 {% csrf_token %}
-                <div class="user-details">
-                    {{ form.as_p }}
-                </div>
-                <div class="button">
-                    <button type="submit">Sign Up</button>
-                </div>
-            </form>
 
-            <!-- Login redirect link -->
-            <div style="text-align: center; margin-top: 10px;">
-                <p style="font-size: 15px;">
-                    Already have an account?
-                    <a href="{% url 'login' %}" style="color: #2193b0; font-weight: 500; text-decoration: none;">
-                        Login here
-                    </a>
-                </p>
-            </div>
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" name="full_name" id="full_name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" name="email" id="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" name="phone" id="phone" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" id="address" placeholder="Enter your address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" name="location" id="location" placeholder="Enter your location" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Create a password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm your password" required>
+                </div>
+
+                <button type="submit" class="btn">Register Now</button>
+            </form>
         </div>
     </div>
-
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('formContainer').classList.add('show');
-            }, 600);
-        });
-    </script>
 </body>
 </html>

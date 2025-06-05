@@ -9,10 +9,9 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
-from .forms import (ApplicantForm, CandidateRegistrationForm,
-                    EducationalBackgroundFormSet, EmployeeRegistrationForm,
-                    JobPostForm, WorkExperienceForm, WorkExperienceFormSet)
-from .models import (Applicant, Candidate, EducationalBackground,
+from .forms import (ApplicantForm, EducationalBackgroundFormSet, JobPostForm,
+                    WorkExperienceForm, WorkExperienceFormSet)
+from .models import (Applicant, Candidate, EducationalBackground, Employee,
                      JobApplicationForm, JobPost, WorkExperience)
 
 email_address=''
@@ -34,36 +33,72 @@ def home_view(request):
     return render(request, 'home.html', context)
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request,user)
-            return redirect('home')
-        else:
-            return render(request, 'login.html', {'error': 'Invalid username or password'})
-    return render(request, 'login.html')
+        pass
+
+    else:
+        return render(request,'login.html')
+
+    # if request.method == 'POST':
+    #     username = request.POST.get('username')
+    #     password = request.POST.get('password')
+    #     user = authenticate(request, username=username, password=password)
+    #     if user is not None:
+    #         login(request,user)
+    #         return redirect('home')
+    #     else:
+    #         return render(request, 'login.html', {'error': 'Invalid username or password'})
+    # return render(request, 'login.html')
 
 
 def employee_signup_view(request):
     if request.method == 'POST':
-        form = EmployeeRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = EmployeeRegistrationForm()
-    return render(request, 'employee_signup.html',{'form':form})
+        company_name = request.POST['company_name']
+        full_name = request.POST['full_name']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        phone = request.POST['phone']
+        address = request.POST['address']
+        company_location = request.POST['company_location']
+
+        if password == confirm_password:
+            if Employee.objects.filter(email=email).exists():
+                messages.info(request,'Email already taken')
+                return redirect('employee_signup')
+            elif Employee.objects.filter(phone=phone).exists():
+                messages.info(request,'Phone number already taken')
+                return redirect('employee_signup')
+            else:
+                user = Employee.objects.create(company_name=company_name,full_name=full_name,email=email,password=password,phone=phone,address=address,company_location=company_location)
+                user.save()
+                print('user created')
+        else:
+            messages.info(request,'Passwords not matching')
+    return render(request,'employee_signup.html')
 
 def candidate_signup_view(request):
+
     if request.method == 'POST':
-        form = CandidateRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = CandidateRegistrationForm()
-    return render(request, 'candidate_signup.html',{'form':form})
+        full_name = request.POST['full_name']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        phone = request.POST['phone']
+        address = request.POST['address']
+        location = request.POST['location']
+
+        if password == confirm_password:
+            if Candidate.objects.filter(email=email).exists():
+                messages.info(request,'Email already taken')
+            elif Candidate.objects.filter(phone=phone).exists():
+                messages.info(request,'Phone number already taken')
+            else:
+                user1 = Candidate.objects.create(full_name=full_name,password=password,email=email,phone=phone,address= address,location=location)
+                user1.save()
+                messages.info(request,'User account successfully')
+        else:
+            messages.info(request,'Passwords not matching')
+    return render(request,'candidate_signup.html')
 
 def total_jobs_view(request):
     location = request.GET.get('location','')
@@ -137,6 +172,11 @@ def tech_apply(request,job_id):
         return HttpResponse("Job not found",status=404)
     return render(request,'apply.html',{'job':job})
 def post_job(request):
+    if not request.user.is_authenticated:
+        return redirect('employer_register')
+    profile = request.user.profile
+    if profile.role != 'employer':
+        return redirect('employer_register')
     if request.method == 'POST':
         form = JobPostForm(request.POST)
         if form.is_valid():
@@ -168,9 +208,6 @@ def delete_job(request, job_id):
 def apply_job_view(request,job_id):
     job = get_object_or_404(JobPost,id = job_id)
     return render(request,'apply_success.html',{'job':job})
-
-
-
 def apply_form(request, job_id):
     job = get_object_or_404(JobPost, id=job_id)
 

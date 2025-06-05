@@ -465,6 +465,16 @@
             <button class="btn btn-primary" onclick="location.href='{% url 'TotalJob' %}'">
                 <i class="fas fa-list"></i> Total Jobs
             </button>
+            {% if user.is_authenticated %}
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </form>
+{% endif %}
+
+
 
 
         </div>
@@ -605,7 +615,13 @@
             <div class="footer-column">
                 <h3>For Employers</h3>
                 <ul>
-                    <li><a href="{% url 'post_job' %}">Post a Job</a></li>
+                    <li>
+                        {% comment %} {% if user.profile.user_type == "employee" %}
+    <a href="{% url 'post_job' %}">Post a Job</a>
+{% endif %} {% endcomment %}
+
+
+                        <a href="{% url 'post_job' %}">Post a Job</a></li>
 
                     <li><a href="{% url 'browse_candidates' %}">Browse Candidates</a></li>
                     <li><a href="#">Pricing Plans</a></li>

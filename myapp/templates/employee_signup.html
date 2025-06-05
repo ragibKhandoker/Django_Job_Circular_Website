@@ -1,202 +1,239 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Signup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+        :root {
+            --primary: #4e73df;
+            --primary-dark: #3a56d4;
+            --secondary: #2e59d9;
+            --light: #f8f9fc;
+            --dark: #5a5c69;
+            --white: #ffffff;
+            --gray: #858796;
+            --success: #1cc88a;
+            --error: #e74a3b;
+        }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8f9fc 0%, #d1d3e2 100%);
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 10px;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6); /* Purple-blue gradient */
+            padding: 20px;
         }
 
-        .fade-in-container {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 1s ease, transform 1s ease;
-        }
-
-        .fade-in-container.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .container {
-            max-width: 700px;
+        .signup-container {
             width: 100%;
-            background-color: #fff;
-            padding: 25px 30px;
-            border-radius: 5px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-        }
-
-        .container .title {
-            font-size: 25px;
-            font-weight: 500;
-            position: relative;
-            text-align: center;
+            max-width: 450px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.6s ease-out;
             margin-bottom: 20px;
         }
 
-        .container .title::before {
-            content: "";
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            bottom: 0;
-            height: 3px;
-            width: 30px;
-            border-radius: 5px;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        form {
-            margin-top: 20px;
+        .signup-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 20px 25px;
+            text-align: center;
         }
 
-        form .user-details {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin: 20px 0 12px 0;
-        }
-
-        form p {
-            margin-bottom: 15px;
-            width: calc(100% / 2 - 20px);
-            position: relative;
-        }
-
-        form p label {
-            display: block;
-            font-weight: 500;
+        .signup-header h2 {
+            font-weight: 600;
+            font-size: 24px;
             margin-bottom: 5px;
         }
 
-        form p input {
-            height: 45px;
+        .signup-form {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 13px;
+        }
+
+        .form-group input {
             width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #d1d3e2;
+            border-radius: 7px;
+            font-size: 13px;
+            transition: all 0.3s;
+            background-color: var(--light);
+        }
+
+        .form-group input:focus {
             outline: none;
-            font-size: 16px;
-            border-radius: 5px;
-            padding-left: 15px;
-            border: 1px solid #ccc;
-            border-bottom-width: 2px;
-            transition: all 0.3s ease;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.2);
+            background-color: var(--white);
         }
 
-        form p input:focus,
-        form p input:valid {
-            border-color: #9b59b6;
+        .form-group input::placeholder {
+            color: var(--gray);
+            opacity: 0.6;
+            font-size: 13px;
         }
 
-        form .button {
-            height: 45px;
-            margin: 35px 0;
-        }
-
-        form .button button {
-            height: 100%;
+        .btn {
             width: 100%;
-            border-radius: 5px;
+            padding: 13px;
             border: none;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 500;
-            letter-spacing: 1px;
+            border-radius: 7px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            transition: all 0.3s;
+            margin-top: 8px;
         }
 
-        form .button button:hover {
-            background: linear-gradient(-135deg, #71b7e6, #9b59b6);
+        .btn:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 115, 223, 0.3);
         }
 
-        .errorlist {
-            color: #e74c3c;
+        .messages-container {
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 7px;
+            margin-bottom: 8px;
             font-size: 14px;
-            margin-top: 5px;
-            list-style: none;
-        }
-
-        @media(max-width: 584px) {
-            .container {
-                max-width: 100%;
-            }
-
-            form p {
-                margin-bottom: 15px;
-                width: 100%;
-            }
-        }
-
-        @media(max-width: 459px) {
-            .container {
-                padding: 25px 20px;
-            }
-        }
-
-        /* Link styles for "Already have an account?" */
-        .login-link {
             text-align: center;
-            margin-top: 20px;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .login-link a {
-            color: #9b59b6;
-            font-size: 16px;
-            font-weight: 500;
-            text-decoration: none;
+        .message.success {
+            background-color: rgba(28, 200, 138, 0.1);
+            color: var(--success);
+            border-left: 3px solid var(--success);
         }
 
-        .login-link a:hover {
-            text-decoration: underline;
+        .message.error {
+            background-color: rgba(231, 74, 59, 0.1);
+            color: var(--error);
+            border-left: 3px solid var(--error);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 576px) {
+            .signup-container {
+                border-radius: 10px;
+            }
+
+            .signup-header {
+                padding: 18px;
+            }
+
+            .signup-form {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Fade-in container -->
-    <div class="fade-in-container" id="formContainer">
-        <div class="container">
-            <div class="title">Register as an Employee</div>
-
-            <!-- Form for employee signup -->
-            <form method="POST">
-                {% csrf_token %}
-                <div class="user-details">
-                    {{ form.as_p }}
-                </div>
-                <div class="button">
-                    <button type="submit">Sign Up</button>
-                </div>
-            </form>
-
-            <!-- Login link for already existing users -->
-            <div class="login-link">
-                <p>Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
-            </div>
-        </div>
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}
     </div>
 
-    <!-- JavaScript for fade-in effect -->
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('formContainer').classList.add('show');
-            }, 600);  // delay in milliseconds (e.g., 600ms = 0.6s)
-        });
-    </script>
+    <div class="signup-container">
+        <div class="signup-header">
+            <h2>Employee Registration</h2>
+            <p>Join your company's network</p>
+        </div>
+
+        <div class="signup-form">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="company_name">Company Name</label>
+                    <input type="text" id="company_name" name="company_name" placeholder="Enter company name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" placeholder="Your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Your work email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" placeholder="Contact number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" placeholder="Your address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="company_location">Company Location</label>
+                    <input type="text" id="company_location" name="company_location" placeholder="Company address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a secure password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
+                </div>
+
+                <button type="submit" class="btn">Complete Registration</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
