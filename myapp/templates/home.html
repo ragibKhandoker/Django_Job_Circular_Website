@@ -456,22 +456,32 @@
             <span>JobFinder Pro</span>
         </div>
         <div class="auth-buttons">
-            <button class="btn btn-outline" onclick="location.href='{% url 'login' %}'">
+            {% comment %} <button class="btn btn-outline" onclick="location.href='{% url 'login' %}'">
                 <i class="fas fa-sign-in-alt"></i> Login
-            </button>
+            </button> {% endcomment %}
+            {%if user.is_authenticated %}
+            <li>Hello ,{{user.first_name}}<li>
+            <li> <a href = "{%url 'logout'%}">Logout</a></li>
+            {%else%}
             <button class="btn btn-primary" onclick="location.href='{% url 'signup' %}'">
                 <i class="fas fa-user-plus"></i> Register
             </button>
+            <button class="btn btn-outline" onclick="location.href='{% url 'login' %}'">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+            {%endif%}
+
+
             <button class="btn btn-primary" onclick="location.href='{% url 'TotalJob' %}'">
                 <i class="fas fa-list"></i> Total Jobs
             </button>
             {% if user.is_authenticated %}
-    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% comment %} <form action="{% url 'logout' %}" method="post" style="display:inline;">
         {% csrf_token %}
         <button class="btn btn-danger" type="submit">
             <i class="fas fa-sign-out-alt"></i> Logout
         </button>
-    </form>
+    </form> {% endcomment %}
 {% endif %}
 
 
