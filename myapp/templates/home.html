@@ -455,39 +455,162 @@
             <i class="fas fa-briefcase"></i>
             <span>JobFinder Pro</span>
         </div>
-        <div class="auth-buttons">
+        {% comment %} <div class="auth-buttons">
             {% comment %} <button class="btn btn-outline" onclick="location.href='{% url 'login' %}'">
                 <i class="fas fa-sign-in-alt"></i> Login
-            </button> {% endcomment %}
-            {%if user.is_authenticated %}
-            <li>Hello ,{{user.first_name}}<li>
-            <li> <a href = "{%url 'logout'%}">Logout</a></li>
-            {%else%}
+            </button>
+
             <button class="btn btn-primary" onclick="location.href='{% url 'signup' %}'">
                 <i class="fas fa-user-plus"></i> Register
             </button>
             <button class="btn btn-outline" onclick="location.href='{% url 'login' %}'">
                 <i class="fas fa-sign-in-alt"></i> Login
             </button>
-            {%endif%}
 
 
             <button class="btn btn-primary" onclick="location.href='{% url 'TotalJob' %}'">
                 <i class="fas fa-list"></i> Total Jobs
             </button>
-            {% if user.is_authenticated %}
-    {% comment %} <form action="{% url 'logout' %}" method="post" style="display:inline;">
-        {% csrf_token %}
-        <button class="btn btn-danger" type="submit">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </button>
-    </form> {% endcomment %}
+            <button class="btn btn-primary" onclick="confirmAndLogout()">
+    <i class="fas fa-list"></i> Logout
+</button>
+
+<script>
+function confirmAndLogout() {
+    if (confirm("Are you sure you want to log out?")) {
+        window.location.href = "{% url 'logout' %}";
+    }
+}
+</script>
+{% if messages %}
+  <div id="message-container">
+    {% for message in messages %}
+      <div style="color: green; font-weight: bold;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    // Hide the message after 6 seconds (6000 milliseconds)
+    setTimeout(function() {
+      const msg = document.getElementById('message-container');
+      if (msg) {
+        msg.style.display = 'none';
+      }
+    }, 6000);
+  </script>
 {% endif %}
 
 
 
 
+
+
+
+
+
+
+
+        </div> {% endcomment %}
+        {% comment %} <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                {% if user.is_employer %}
+                    <button class="btn" onclick="location.href='{% url 'post_job' %}'">Post a Job</button>
+                    <button class="btn" onclick="location.href='{% url 'logout' %}'">Logout</button>
+                {% else %}
+                    <button class="btn" onclick="location.href='{% url 'logout' %}'">Logout</button>
+                {% endif %}
+            {% else %}
+                <button class="btn" onclick="location.href='{% url 'employer_login' %}'">Login as Employer</button>
+                <button class="btn" onclick="location.href='{% url 'candidate_login' %}'">Login as Candidate</button>
+            {% endif %}
+            <button class="btn btn-primary" onclick="location.href='{% url 'TotalJob' %}'">
+                <i class="fas fa-list"></i> Total Jobs
+            </button>
+            <button class="btn btn-primary" onclick="confirmAndLogout()">
+    <i class="fas fa-list"></i> Logout
+</button>
+
+<script>
+function confirmAndLogout() {
+    if (confirm("Are you sure you want to log out?")) {
+        window.location.href = "{% url 'logout' %}";
+    }
+}
+</script>
+{% if messages %}
+  <div id="message-container">
+    {% for message in messages %}
+      <div style="color: green; font-weight: bold;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    // Hide the message after 6 seconds (6000 milliseconds)
+    setTimeout(function() {
+      const msg = document.getElementById('message-container');
+      if (msg) {
+        msg.style.display = 'none';
+      }
+    }, 6000);
+  </script>
+        </div> {% endcomment %}
+    <div class="auth-buttons">
+    {% if user.is_authenticated %}
+        {% if user.is_employer %}
+            <button class="btn" onclick="location.href='{% url 'post_job' %}'">Post a Job</button>
+            <button class="btn" onclick="location.href='{% url 'logout' %}'">Logout</button>
+        {% else %}
+            <button class="btn" onclick="location.href='{% url 'logout' %}'">Logout</button>
+        {% endif %}
+    {% else %}
+        <button class="btn" onclick="location.href='{% url 'employer_login' %}'">Login as Employer</button>
+        <button class="btn" onclick="location.href='{% url 'candidate_login' %}'">Login as Candidate</button>
+    {% endif %}
+
+
+    <button class="btn btn-primary" onclick="location.href='{% url 'TotalJob' %}'">
+        <i class="fas fa-list"></i> Total Jobs
+    </button>
+
+    <script>
+    function confirmAndLogout() {
+        if (confirm("Are you sure you want to log out?")) {
+            window.location.href = "{% url 'logout' %}";
+        }
+    }
+    </script>
+
+    {% if messages %}
+        <div id="message-container">
+            {% for message in messages %}
+                <div style="color: green; font-weight: bold;">
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
+
+        <script>
+        // Hide the message after 6 seconds (6000 milliseconds)
+        setTimeout(function() {
+            const msg = document.getElementById('message-container');
+            if (msg) {
+                msg.style.display = 'none';
+            }
+        }, 6000);
+        </script>
+    {% endif %}
+</div>
+
+
+
+
+
+
+
     </header>
     <section class="hero" id="threejs-hero">
         <div class="hero-content">
@@ -592,6 +715,7 @@
 
 
                             <a href="{% url 'apply_form' job.id %}" class="btn btn-primary">Apply Now</a>
+
                         </div>
                     </div>
                 {% endfor %}

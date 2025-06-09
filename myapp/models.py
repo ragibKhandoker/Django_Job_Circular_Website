@@ -95,7 +95,7 @@ class JobPost(models.Model):
         ('mid_level', 'Mid Level (3-5 years)'),
         ('senior_level', 'Senior Level (5+ years)'),
     ]
-
+    employer = models.ForeignKey(User,on_delete=models.CASCADE)
     job_id = models.IntegerField(default=0)
     company_name = models.CharField(max_length=100)
     title = models.CharField(max_length=200, choices=JOB_CHOICES)

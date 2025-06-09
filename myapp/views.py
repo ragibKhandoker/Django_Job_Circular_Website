@@ -23,7 +23,7 @@ confirm_password=''
 def home_view(request):
     latest_jobs = JobPost.objects.order_by('-created_at')[:4]
     user = request.user
-    can_post_job = hasattr(user,'employeeprofile')
+    can_post_job = hasattr(user,'employerprofile')
     can_apply_job = hasattr(user,'candidateprofile')
 
     context = {
@@ -32,44 +32,50 @@ def home_view(request):
         'can_apply_job': can_apply_job,
     }
     return render(request, 'home.html', context)
-def employee_login_view(request):
+def employer_login_view(request):
+    print(request)
     if request.method == 'POST':
+
         username = request.POST['username']
         password = request.POST['password']
         user = auth.authenticate(request,username=username,password=password)
+        print(user)
         if user is not None:
             auth.login(request,user)
+            messages.info(request,'Logged in successfully')
             return redirect('/')
         else:
             messages.info(request,'Invalid credentials')
-            return redirect('/')
+            return redirect('employer_login')
     else:
-        return render(request,'login.html')
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+        return render(request,'login_employer.html')
 def candidate_login_view(request):
     if request.method == 'POST':
+        print(request)
         username = request.POST['username']
         password = request.POST['password']
         user = auth.authenticate(request,username=username,password=password)
+        print(user)
         if user is not None:
             auth.login(request,user)
+            messages.info(request,'Logged in successfully')
             return redirect('/')
         else:
             messages.info(request,'Invalid credentials')
-            return redirect('/')
+            return redirect('candidate_login')
     else:
-        return render(request,'login.html')
+        return render(request,'login_candidate.html')
 
 def login_choice_view(request):
     return render(request,'login_choice.html')
 
 
+def logout_view(request):
+    logout(request)
+    messages.success(request,'Successfully logged out')
+    return redirect('home')
 
-
-
-def employee_signup_view(request):
+def employer_signup_view(request):
     if request.method == 'POST':
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
@@ -80,10 +86,10 @@ def employee_signup_view(request):
         if password1 == password2:
             if User.objects.filter(username=username).exists():
                 messages.info(request,'Username is already taken')
-                return redirect('employee_signup')
+                return redirect('employer_signup')
             elif User.objects.filter(email=email).exists():
                 messages.info(request,'Email is already taken')
-                return redirect('employee_signup')
+                return redirect('employer_signup')
             else:
                 user = User.objects.create_user(username=username,password=password1,email=email,first_name=first_name,last_name=last_name)
                 user.save()
@@ -91,10 +97,9 @@ def employee_signup_view(request):
                 return redirect('login')
         else:
             messages.info(request,'Passwords are not matching')
-            return redirect('employee_signup')
-        # return redirect('/')
+            return redirect('employer_signup')
     else:
-        return render(request,'employee_signup.html')
+        return render(request,'employer_signup.html')
 
 def candidate_signup_view(request):
     if request.method == 'POST':
@@ -120,7 +125,6 @@ def candidate_signup_view(request):
         else:
             messages.info(request,'Passwords are not matching')
             return redirect('candidate_signup')
-        # return redirect('/')
     else:
         return render(request,'candidate_signup.html')
 
@@ -198,16 +202,27 @@ def tech_apply(request,job_id):
     except Techjob.DoesNotExist:
         return HttpResponse("Job not found",status=404)
     return render(request,'apply.html',{'job':job})
+
+@login_required
 def post_job(request):
     if request.method == 'POST':
         form = JobPostForm(request.POST)
         if form.is_valid():
-            form.save()
-        return redirect('/job-list/?posted=true')
+            job = form.save(commit=False)
+            job.employer = request.user
+            job.save()
+            messages.success(request,'Job posted successfully!')
+            return redirect('job_list')
     else:
         form = JobPostForm()
-
     return render(request,'post_job.html',{'form':form})
+@login_required
+def delete_job(request,job_id):
+    job = get_object_or_404(JobPost,id=job_id)
+    if not job.employer or job.employer != request.user:
+        return HttpResponseForbidden("You are not allowed to delete this job.")
+    job.delete()
+    return redirect('job_list')
 
 
 def create_job(request):
@@ -221,15 +236,16 @@ def job_list(request):
         'is_category_page':False
     }
     return render(request,'job_list.html',context)
+# def delete_job(request, job_id):
+#     JobPost.objects.filter(id=job_id).delete()
+#     return redirect('job_list')
 
-def delete_job(request, job_id):
-    JobPost.objects.filter(id=job_id).delete()
-    return redirect('job_list')
 
 
 def apply_job_view(request,job_id):
     job = get_object_or_404(JobPost,id = job_id)
     return render(request,'apply_success.html',{'job':job})
+@login_required
 def apply_form(request, job_id):
     job = get_object_or_404(JobPost, id=job_id)
 
@@ -274,7 +290,7 @@ def apply_form(request, job_id):
         'edu_formset': edu_formset
     })
 
-
+@login_required
 def browse_candidates(request):
     candidates = Applicant.objects.all()
     return render(request,'browse_candidates.html',{'candidates':candidates})

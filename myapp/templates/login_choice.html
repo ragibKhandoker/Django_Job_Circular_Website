@@ -96,10 +96,10 @@
     <div class="login-container">
         <h2>Login As</h2>
         <div class="button-container">
-            <a href="/login/employee/">
-                <button class="employee-btn">Login as Employee</button>
+            <a href="{% url 'employer_login' %}">
+                <button class="employee-btn">Login as Employer</button>
             </a>
-            <a href="/login/candidate/">
+            <a href="{% url 'candidate_login' %}">
                 <button class="candidate-btn">Login as Candidate</button>
             </a>
         </div>

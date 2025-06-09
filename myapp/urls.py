@@ -5,8 +5,8 @@ from django.urls import path
 
 from . import views
 from .views import (candidate_login_view, candidate_signup_view,
-                    choose_role_view, employee_login_view,
-                    employee_signup_view, home_view, login_choice_view,
+                    choose_role_view, employer_login_view,
+                    employer_signup_view, home_view, login_choice_view,
                     logout_view)
 
 urlpatterns = [
@@ -14,7 +14,7 @@ urlpatterns = [
     path('', views.home_view, name='home'),
     # path('login/', views.login_view, name='login'),
     path('signup/', views.choose_role_view, name='signup'),
-    path('signup/employee/', views.employee_signup_view, name='employee_signup'),
+    path('signup/employer/', views.employer_signup_view, name='employer_signup'),
     # path('signup/employee/', employee_signup_view, name='employee_signup'),
     path('signup/candidate/', candidate_signup_view, name='candidate_signup'),
     path('apply/<int:job_id>/', views.apply_form, name='apply_form'),
@@ -27,9 +27,10 @@ urlpatterns = [
     path('apply-success/', views.apply_success, name='apply_success'),
     path('browse-candidates/',views.browse_candidates,name='browse_candidates'),
     path('candidate/<int:applicant_id>/',views.candidate_detail,name="candidate_detail"),
-    # path('logout/',auth_views.LogoutView.as_view(next_page='login'),name='logout'),
-    path('login/',views.login_choice_view,name='login'),
-    path('login/employee/',views.employee_login_view,name='employee_login'),
-    path('login/candidate/',views.candidate_login_view,name='candidate_login'),
-    path('logout/',logout_view,name='logout')
+    path('login_choice/',views.login_choice_view,name='login'),
+    path('login_choice/employer_login/',views.employer_login_view,name='employer_login'),
+    path('login_choice/candidate_login/',views.candidate_login_view,name='candidate_login'),
+    path('logout/',views.logout_view,name='logout')
+
+
 ]
