@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser, User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
@@ -95,6 +96,7 @@ class JobPost(models.Model):
         ('mid_level', 'Mid Level (3-5 years)'),
         ('senior_level', 'Senior Level (5+ years)'),
     ]
+
     employer = models.ForeignKey(User,on_delete=models.CASCADE)
     job_id = models.IntegerField(default=0)
     company_name = models.CharField(max_length=100)
@@ -132,7 +134,7 @@ class JobApplicationForm(models.Model):
     industry = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     def __str__(self):
-        return f"{self.title} ({self.status})"
+        return f"{self.title} ({self.job_type})"
 
 class Applicant(models.Model):
     job = models.ForeignKey(JobPost,on_delete=models.CASCADE,db_column='job')

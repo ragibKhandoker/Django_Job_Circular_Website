@@ -1,4 +1,5 @@
 import re
+from functools import wraps
 
 from django.contrib import auth, messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -19,7 +20,6 @@ email_address=''
 password=''
 confirm_password=''
 # Create your views here.
-# @login_required
 def home_view(request):
     latest_jobs = JobPost.objects.order_by('-created_at')[:4]
     user = request.user
@@ -203,7 +203,17 @@ def tech_apply(request,job_id):
         return HttpResponse("Job not found",status=404)
     return render(request,'apply.html',{'job':job})
 
-@login_required
+def employer_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated or request.user.groups.filter(name='employer').exists():
+            return redirect('employer_login')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+
+@employer_required
 def post_job(request):
     if request.method == 'POST':
         form = JobPostForm(request.POST)
@@ -236,16 +246,22 @@ def job_list(request):
         'is_category_page':False
     }
     return render(request,'job_list.html',context)
-# def delete_job(request, job_id):
-#     JobPost.objects.filter(id=job_id).delete()
-#     return redirect('job_list')
-
 
 
 def apply_job_view(request,job_id):
     job = get_object_or_404(JobPost,id = job_id)
     return render(request,'apply_success.html',{'job':job})
-@login_required
+
+def candidate_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated or request.user.groups.filter(name='candidate').exists():
+            return redirect('candidate_login')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+@candidate_required
 def apply_form(request, job_id):
     job = get_object_or_404(JobPost, id=job_id)
 
@@ -318,12 +334,12 @@ def save_personal_info(request):
 def application_view(request):
     if request.method == 'POST':
         print("Form submitted")
-        form = ApplicationForm(request.POST)
+        form = JobApplicationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('success_page')
     else:
-        form = ApplicationForm()
+        form = JobApplicationForm()
     return render(request,'application.html',{'form':form})
 def application_success(request):
     return render(request,'application_success.html')
