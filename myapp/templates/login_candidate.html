@@ -3,6 +3,7 @@
 <head>
     <title>Login Page</title>
     <style>
+        /* Your existing styles */
         * {
             margin: 0;
             padding: 0;
@@ -151,15 +152,24 @@
     <form action="{% url 'candidate_login' %}" method="post">
         {% csrf_token %}
         <h2> Candidate Login</h2>
-        <input type="text" name="username" placeholder="username"><br>
-        <input type="password" name="password" placeholder="password"><br>
+        <input type="text" name="username" placeholder="username" required><br>
+        <input type="password" name="password" placeholder="password" required><br>
+
         <button type="submit">Submit</button><br>
+
+        <!-- Forgot Password Link -->
+        <div style="text-align:center; margin-top:10px;">
+            <a href="{% url 'password_reset' %}" style="color:#667eea; text-decoration:none; font-weight:600;">
+                Forgot Password?
+            </a>
+        </div>
+
         <div class="candidate_signup">
             Didn't sign up? <a href="/signup/">Please sign up</a>
         </div>
         <div>
             {% for message in messages %}
-            <h3> {{message}} </h3>
+            <h3> {{ message }} </h3>
             {% endfor %}
         </div>
     </form>

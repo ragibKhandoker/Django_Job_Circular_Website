@@ -73,6 +73,7 @@ def login_choice_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request,'Successfully logged out')
+    # print("User logged out")
     return redirect('home')
 
 def employer_signup_view(request):
@@ -129,7 +130,18 @@ def candidate_signup_view(request):
         return render(request,'candidate_signup.html')
 
 
-
+def job_list_view(request):
+    user_role = None
+    if request.user.is_authenticated:
+        if Candidate.objects.filter(user=request.user).exists():
+            user_role = 'candidate'
+        elif Employee.objects.filter(user=request.user).exists():
+            user_role = 'employer'
+    context = {
+        'user_role': user_role,
+        'jobs': JobPost.objects.all(),
+    }
+    return render(request,'jobs/job_list.html',context)
 
 def total_jobs_view(request):
     location = request.GET.get('location','')
@@ -263,8 +275,8 @@ def candidate_required(view_func):
 
 @candidate_required
 def apply_form(request, job_id):
-    job = get_object_or_404(JobPost, id=job_id)
 
+    job = get_object_or_404(JobPost, id=job_id)
     if request.method == 'POST':
         applicant_form = ApplicantForm(request.POST, request.FILES)
         work_formset = WorkExperienceFormSet(request.POST, prefix='work')

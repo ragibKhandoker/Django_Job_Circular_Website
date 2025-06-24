@@ -92,6 +92,20 @@
             margin: 5px 0;
             font-weight: 500;
         }
+        .forgot-password {
+            text-align: right;
+            margin: 10px 0;
+        }
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        .forgot-password a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
         .employer_signup {
             text-align: center;
             margin-top: 20px;
@@ -124,6 +138,9 @@
         <h2> Employer Login</h2>
         <input type="text" name="username" placeholder="Username"><br>
         <input type="password" name="password" placeholder="Password"><br>
+        <div class="forgot-password">
+            <a href="/password-reset/">Forgot Password?</a>
+        </div>
         <button type="submit">Submit</button><br>
         <div class="employer_signup">
             Didn't sign up? <a href="/signup/">Please sign up</a>
