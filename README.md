@@ -1,4 +1,4 @@
-# Job_Circular_Website
+# 💼 Job_Circular_Website
 
 # 📌 Project Overview
 The Job Circular Website is a mini job portal built using the Django framework, designed to simplify the job search and recruitment process. It provides a user-friendly platform where job seekers can browse and search for jobs based on categories, and employers can easily post job listings.
