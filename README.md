@@ -6,6 +6,7 @@ The Job Circular Website is a mini job portal built using the Django framework, 
 This project demonstrates a clean, category-based job management system that balances simplicity and functionality. It is ideal for learning and demonstrating the core concepts of full-stack web development using Django, PostgreSQL, and basic front-end technologies.
 
 # 🚀 Features
+🔍 Job Search by Category – Easily filter jobs by different sectors.
 
 ## Commnads to run this Project
 ```bash
