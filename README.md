@@ -46,11 +46,6 @@ python manage.py createsuperuser
 ```bash
 python manage.py runserver
 ```
-## 🔗 Access the Website
-
-- 🌐 **Main Website:** [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-- 🔐 **Admin Dashboard:** [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
-
 ## 👤 User Roles
 - **Admin:** Can manage users, categories, and job posts via the Django admin panel.
 - **Employer:** Can create, update, and delete job listings.
