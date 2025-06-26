@@ -7,6 +7,10 @@ This project demonstrates a clean, category-based job management system that bal
 
 # 🚀 Features
 🔍 Job Search by Category – Easily filter jobs by different sectors.
+📝 Job Posting for Employers – Employers can create and manage job listings.
+🔐 Admin Dashboard – Django admin panel to manage users, categories, and jobs.
+📱 Responsive Design – Clean and mobile-friendly UI using HTML and CSS.
+🗂️ Category-based Job Organization – Jobs are organized into categories for better filtering.
 
 ## Commnads to run this Project
 ```bash
