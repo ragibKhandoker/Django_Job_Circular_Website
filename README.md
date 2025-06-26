@@ -33,4 +33,17 @@ source env/bin/activate  # On macOS/Linux
 ```bash
 pip install -r requirements.txt
 ```
+# 4️⃣ Apply Migrations
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+# 5️⃣ Create a Superuser (Admin)
+```bash
+python manage.py createsuperuser
+```
+# 6️⃣ Run the Server
+```bash
+python manage.py runserver
+```
 
