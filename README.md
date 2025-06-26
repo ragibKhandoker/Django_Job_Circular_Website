@@ -23,4 +23,10 @@ This project demonstrates a clean, category-based job management system that bal
 git clone https://github.com/your-username/job-circular-website.git
 cd job-circular-website
 ```
-
+# 2️⃣ **Set Up Virtual Environment**
+```
+python -m venv env
+env/Scripts/activate     # On Windows
+# OR
+source env/bin/activate  # On macOS/Linux
+```
