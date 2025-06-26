@@ -27,6 +27,5 @@ cd job-circular-website
 ```
 python -m venv env
 env/Scripts/activate     # On Windows
-# OR
 source env/bin/activate  # On macOS/Linux
 ```
