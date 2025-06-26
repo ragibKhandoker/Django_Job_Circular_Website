@@ -15,6 +15,9 @@ This project demonstrates a clean, category-based job management system that bal
 - **Frontend:** HTML, CSS
 - **Backend:** Django (Python)
 - **Database:** PostgreSQL
+
+# ⚙️ Getting Started
+- Follow these steps to set up the project on your local machine:
 ## Commnads to run this Project
 ```bash
 python -m venv env
