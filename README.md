@@ -11,7 +11,10 @@ This project demonstrates a clean, category-based job management system that bal
 - 🔐 **Admin Dashboard** – Django admin panel to manage users, categories, and jobs.
 - 📱 **Responsive Design** – Clean and mobile-friendly UI using HTML and CSS.
 - 🗂️ **Category-based Job Organization** – Jobs are organized into categories for better filtering.
-
+# 🛠️ Technologies Used
+- **Frontend:** HTML, CSS
+- **Backend:** Django (Python)
+- **Database:** PostgreSQL
 ## Commnads to run this Project
 ```bash
 python -m venv env
