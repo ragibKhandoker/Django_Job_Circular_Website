@@ -52,9 +52,9 @@ python manage.py runserver
 - 🔐 **Admin Dashboard:** [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
 
 ## 👤 User Roles
-- Admin:Can manage users, categories, and job posts via the Django admin panel.
-- Employer:Can create, update, and delete job listings.
-- Job Seeker:Can search for and view jobs based on categories.
+- **Admin:** Can manage users, categories, and job posts via the Django admin panel.
+- **Employer:** Can create, update, and delete job listings.
+- **Job Seeker:** Can search for and view jobs based on categories.
 ## 📝 License
 This project is licensed under the [MIT License](LICENSE).
 
