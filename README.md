@@ -1,13 +1,11 @@
 # Job_Circular_Website
 
-# Project Overview
-This Job Posting Website is built in Django framework which is a popular Python Web framework. In this website Job seeker can search jobs based on the categories and on the other hand a job employer can post a job based on the categoties. This is a mini job portal pltform where I have tried to make the project very userfriendly to use.
+#📌Project Overview
+The Job Circular Website is a mini job portal built using the Django framework, designed to simplify the job search and recruitment process. It provides a user-friendly platform where job seekers can browse and search for jobs based on categories, and employers can easily post job listings.
 
-# Technologis Used
+This project demonstrates a clean, category-based job management system that balances simplicity and functionality. It is ideal for learning and demonstrating the core concepts of full-stack web development using Django, PostgreSQL, and basic front-end technologies.
 
-1.Html,CSS (frontend)
-2.PostgreSql (Database)
-3.Django (Backend)
+# 🚀
 
 ## Commnads to run this Project
 ```bash
