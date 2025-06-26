@@ -18,13 +18,9 @@ This project demonstrates a clean, category-based job management system that bal
 
 # ⚙️ Getting Started
 - Follow these steps to set up the project on your local machine:
-## Commnads to run this Project
+# 1️⃣ **Clone the Repository**
 ```bash
-python -m venv env
-env/Scripts/activate
-python manage.py runserver
-
-For SuperUser:
-python manage.py createsuperuser
+git clone https://github.com/your-username/job-circular-website.git
+cd job-circular-website
 ```
 
