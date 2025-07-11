@@ -9,6 +9,7 @@ from django.contrib.auth.models import User, auth
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views import View
 
 from .forms import (ApplicantForm, EducationalBackgroundFormSet, JobPostForm,
@@ -234,7 +235,8 @@ def post_job(request):
             job.employer = request.user
             job.save()
             messages.success(request,'Job posted successfully!')
-            return redirect('job_list')
+            return redirect(f"{reverse('job_list')}?posted=true&job_id={job.id}")
+
     else:
         form = JobPostForm()
     return render(request,'post_job.html',{'form':form})
